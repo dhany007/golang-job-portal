@@ -1,12 +1,14 @@
 package configs
 
 import (
+	"github.com/dhany007/golang-job-portal/services/repository/database"
 	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 )
 
 type Config struct {
 	Router *httprouter.Router
+	DB     *database.DB
 }
 
 func New() Config {

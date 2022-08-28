@@ -26,6 +26,7 @@ func main() {
 
 	configs.Catch(app.InitService())
 	configs.Catch(app.InitEnv())
+	configs.Catch(app.InitPostgres())
 	configs.Catch(app.InitServer())
 
 	app.Start()
