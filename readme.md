@@ -9,6 +9,10 @@ Make API for Job Portal. All development use `git flow`.
   - Git Flow
   -
 
+## Architecture
+![img-architecture](architecture-golang.png)
+source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
+
 ## Scopes
 | Ticket ID | Ticket Title | User Story |
 |---|---|---|
