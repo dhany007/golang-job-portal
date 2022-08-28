@@ -1,14 +1,16 @@
-package main
+package rest
 
 import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/dhany007/golang-job-portal/configs"
 	"github.com/julienschmidt/httprouter"
 )
 
-func handlerTest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (h handler) PingTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	h.testUsecase.PingTest()
+
+	// return response
 	w.Header().Add("content-type", "application/json")
 	response := map[string]string{
 		"message": "success",
@@ -19,14 +21,4 @@ func handlerTest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func main() {
-	app := configs.New()
-
-	configs.Catch(app.InitService())
-	configs.Catch(app.InitEnv())
-	configs.Catch(app.InitServer())
-
-	app.Start()
 }
