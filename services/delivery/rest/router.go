@@ -6,17 +6,20 @@ import (
 )
 
 type handler struct {
-	testUsecase services.TestUsecase
+	userUsecase services.UserUsecase
 }
 
-func NewHandler(testUsecase services.TestUsecase) (router *httprouter.Router) {
+func NewHandler(
+	userUsecase services.UserUsecase,
+) (router *httprouter.Router) {
 	router = httprouter.New()
 
 	h := handler{
-		testUsecase: testUsecase,
+		userUsecase,
 	}
 
-	router.GET("/ping", h.PingTest)
+	// user router
+	router.POST("/users/register", h.Register)
 
 	return
 }

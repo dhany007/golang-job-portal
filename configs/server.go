@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
+
+	"github.com/dhany007/golang-job-portal/services/utils"
 )
 
 func (c *Config) InitServer() (err error) {
 	var (
-		envPort = os.Getenv("APP_PORT")
+		envPort = utils.GetEnv("APP_PORT", APP_PORT)
 	)
 
 	port := fmt.Sprintf(":%s", envPort)

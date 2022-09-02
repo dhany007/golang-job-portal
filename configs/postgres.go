@@ -2,18 +2,18 @@ package configs
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/dhany007/golang-job-portal/services/repository/database"
+	"github.com/dhany007/golang-job-portal/services/utils"
 )
 
 func (c *Config) InitPostgres() error {
 	var (
-		host     = os.Getenv("DB_HOST")
-		user     = os.Getenv("DB_USER")
-		password = os.Getenv("DB_PWD")
-		dbname   = os.Getenv("DB_NAME")
-		port     = os.Getenv("DB_PORT")
+		host     = utils.GetEnv("DB_HOST", DB_HOST)
+		user     = utils.GetEnv("DB_USER", DB_USER)
+		password = utils.GetEnv("DB_PWD", DB_PASS)
+		dbname   = utils.GetEnv("DB_NAME", DB_NAME)
+		port     = utils.GetEnv("DB_PORT", DB_PORT)
 	)
 
 	dsn := fmt.Sprintf(
@@ -24,7 +24,6 @@ func (c *Config) InitPostgres() error {
 	db, err := database.NewPostgreConnection(dsn)
 
 	if err != nil {
-		fmt.Println("err", err)
 		return fmt.Errorf("failed connect to database, %s", dsn)
 	}
 
