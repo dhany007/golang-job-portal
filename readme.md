@@ -27,6 +27,45 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
 ## Api Specs
 
 ### User Register
+  - Method : POST
+  - Endpoint : `/users`
+  - Request
+    ```
+    {
+      "email": string,required,email,
+      "password": string,required,length(6|32),
+      "role": int,required,range(1|2)
+    }
+    ```
+  - Response
+    - Success
+      ```
+      {
+        "status": int,
+        "message": {
+            "en": "string",
+            "id": "string"
+        },
+        "data": {
+            "id": string,uuid,
+            "email": string,
+            "is_active": int,
+            "role": int,
+            "created_at": string,time,utc,
+            "modified_at": string,time,utc
+        }
+      }
+      ```
+    - Failed
+      ```
+      {
+        "status": int,
+        "message": {
+            "en": "string",
+            "id": "string"
+        }
+      }
+      ```
 ### Update Profil Company
 ### Update Profil Candidate
 ### Get List Company
