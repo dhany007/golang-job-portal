@@ -22,8 +22,9 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
 | [JP-04](readme.md#update-profil-candidate) | Update profil candidate | As a candidate, i can update my profil |
 | [JP-05](readme.md#get-list-company) | Get list company | As a candidate, i can see list of company |
 | [JP-06](readme.md#get-detail-company) | Get detail company | As a candidate, i can see detail of company |
-| [JP-07](readme.md#review-company) | Review Company | As a candidate, i can review company with rating |
-| [JP-08](readme.md#get-list-review-company) | Get List Review Company | As a candidate, i can get list of all reviews of company |
+| [JP-07](readme.md#review-company) | Review company | As a candidate, i can review company with rating |
+| [JP-08](readme.md#get-list-review-company) | Get list review company | As a candidate, i can get list of all reviews of company |
+| [JP-09](readme.md#get-list-review-company) | Get list company dresscode, benefits, and size | As a company, i can get list code dresscode, benefits and size |
 
 ## Api Specs
 
