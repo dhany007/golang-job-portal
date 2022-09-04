@@ -20,6 +20,9 @@ func NewHandler(
 
 	// user router
 	router.POST("/users/register", h.Register)
+	router.POST("/users/login", h.Login)
+	router.POST("/users/refresh-token", h.RefreshToken)
+	router.POST("/users/logout", h.Logout)
 
 	return
 }

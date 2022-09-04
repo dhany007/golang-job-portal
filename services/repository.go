@@ -8,5 +8,6 @@ import (
 
 type UserRepository interface {
 	GetUserByEmail(ctx context.Context, email string) (result models.User, err error)
+	GetUserById(ctx context.Context, id string) (result models.User, err error)
 	CreateUser(ctx context.Context, args models.User) (result models.User, err error)
 }

@@ -106,3 +106,27 @@ func (u userRepository) CreateUser(ctx context.Context, args models.User) (resul
 
 	return result, err
 }
+
+func (u userRepository) GetUserById(ctx context.Context, id string) (result models.User, err error) {
+	var (
+		row *sqlx.Rows
+	)
+	row, err = u.DB.QueryxContext(ctx, queries.QueryGetUserById, id)
+
+	if err != nil {
+		log.Printf("[user] [repository] [GetUserById] while QueryxContext, err:%+v\n", err)
+		return result, err
+	}
+
+	defer row.Close()
+
+	for row.Next() {
+		err = row.StructScan(&result)
+		if err != nil {
+			log.Printf("[user] [repository] [GetUserById] while StructScan, err:%+v\n", err)
+			return result, err
+		}
+	}
+
+	return result, err
+}
