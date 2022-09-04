@@ -23,6 +23,14 @@ const (
 	errIdBadRequest             = "Request tidak sah"
 	errEnRegisEmailNotAvailable = "Email registration not available"
 	errIdRegisEmailNotAvailable = "Email registrasi tidak dapat digunakan"
+	errEnUserNotFound           = "User with email not found"
+	errIdUserNotFound           = "User dengan email tidak ditemukan"
+	errEnPwdNotMatch            = "Password not match"
+	errIdPwdNotMatch            = "Password tidak cocok"
+	errEnTokenExpired           = "Token expired"
+	errIdTokenExpired           = "Token expired"
+	errEnTokenInvalid           = "Token invalid"
+	errIdTokenInvalid           = "Token invalid"
 )
 
 // status code
@@ -32,6 +40,10 @@ const (
 	statusBadRequest             = http.StatusBadRequest
 	statusValidatorFail          = http.StatusBadRequest
 	statusRegisEmailNotAvailable = http.StatusBadRequest
+	statusUserNotFound           = http.StatusBadRequest
+	statusPwdNotMatch            = http.StatusBadRequest
+	statusTokenExpired           = http.StatusBadRequest
+	statusTokenInvalid           = http.StatusBadRequest
 )
 
 // constant increasing sequences
@@ -41,6 +53,10 @@ const (
 	SuccesOk
 	ErrorValidation
 	ErrorRegisEmail
+	ErrorUserNotFound
+	ErrorPwdNotMatch
+	ErrorTokenExpired
+	ErrorTokenInvalid
 )
 
 type ReturningValue struct {
@@ -63,11 +79,15 @@ func add(status int, en string, id string) ReturningValue {
 }
 
 var mapping = map[int]ReturningValue{
-	ErrorServerError: add(statusServerError, errEnServerError, errIdServerError),
-	ErrorBadRequest:  add(statusBadRequest, errEnBadRequest, errIdBadRequest),
-	SuccesOk:         add(statusOk, successEnGeneral, successIdGeneral),
-	ErrorValidation:  add(statusValidatorFail, "", ""),
-	ErrorRegisEmail:  add(statusRegisEmailNotAvailable, errEnRegisEmailNotAvailable, errIdRegisEmailNotAvailable),
+	ErrorServerError:  add(statusServerError, errEnServerError, errIdServerError),
+	ErrorBadRequest:   add(statusBadRequest, errEnBadRequest, errIdBadRequest),
+	SuccesOk:          add(statusOk, successEnGeneral, successIdGeneral),
+	ErrorValidation:   add(statusValidatorFail, "", ""),
+	ErrorRegisEmail:   add(statusRegisEmailNotAvailable, errEnRegisEmailNotAvailable, errIdRegisEmailNotAvailable),
+	ErrorUserNotFound: add(statusUserNotFound, errEnUserNotFound, errIdUserNotFound),
+	ErrorPwdNotMatch:  add(statusPwdNotMatch, errEnPwdNotMatch, errIdPwdNotMatch),
+	ErrorTokenExpired: add(statusTokenExpired, errEnTokenExpired, errIdTokenExpired),
+	ErrorTokenInvalid: add(statusTokenInvalid, errEnTokenInvalid, errIdTokenInvalid),
 }
 
 func NewErrork(code int) error {

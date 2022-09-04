@@ -17,7 +17,7 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
 | Ticket ID | Ticket Title | User Story |
 |---|---|---|
 | [JP-01](readme.md#user-register) | User register | As a User, i can register as company or candidate |
-| [JP-02](readme.md#user-login) | User login | As a User, i can login as company or candidate |
+| [JP-02](readme.md#user-login) | User login, refresh access token and logout | As a User, i can login as company or candidate, refresh access token and logout |
 | [JP-03](readme.md#update-profil-company) | Update profil company | As a company, i can update my profil |
 | [JP-04](readme.md#update-profil-candidate) | Update profil candidate | As a candidate, i can update my profil |
 | [JP-05](readme.md#get-list-company) | Get list company | As a candidate, i can see list of company |
@@ -28,8 +28,10 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
 ## Api Specs
 
 ### User Register
-  - Method : POST
-  - Endpoint : `/users`
+  - Desctription : User for register
+  - Method : `POST`
+  - Endpoint : `/users/register`
+  - Parameter : -
   - Request
     ```
     {
@@ -68,6 +70,72 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       }
       ```
 ### User Login
+  - Description: User for login, user will get access-token for access all endpoint and set to cookie
+  - Method : `POST`
+  - Endpoint : `/users/login`
+  - Parameter : -
+  - Request
+    ```
+    {
+      "email": string,required,email,
+      "password": string,required,length(6|32),
+    }
+    ```
+  - Response
+    - Success
+      ```
+      {
+        "status": int,
+        "message": {
+            "en": "string",
+            "id": "string"
+        },
+        "data": {
+            "refresh-token": string,uuid,
+            "access-token": string,uuid
+        }
+      }
+      ```
+    - Failed
+      ```
+      {
+        "status": int,
+        "message": {
+            "en": "string",
+            "id": "string"
+        }
+      }
+      ```
+### User Refresh Token
+  - Description : Endpoint for refresh access-token from refresh-token. If refresh-token expired, user should login again.
+  - Method : `POST`
+  - Endpoint : `/users/refresh-token`
+  - Parameter : -
+  - Request: -
+  - Response
+    - Success
+      ```
+      {
+        "status": int,
+        "message": {
+            "en": "string",
+            "id": "string"
+        },
+        "data": {
+            "access-token": string,uuid
+        }
+      }
+      ```
+    - Failed
+      ```
+      {
+        "status": int,
+        "message": {
+            "en": "string",
+            "id": "string"
+        }
+      }
+      ```
 ### Update Profil Company
 ### Update Profil Candidate
 ### Get List Company
