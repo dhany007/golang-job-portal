@@ -6,23 +6,31 @@ import (
 )
 
 type handler struct {
-	userUsecase services.UserUsecase
+	userUsecase    services.UserUsecase
+	companyUsecase services.CompanyUsecase
 }
 
 func NewHandler(
 	userUsecase services.UserUsecase,
+	companyUsecase services.CompanyUsecase,
 ) (router *httprouter.Router) {
 	router = httprouter.New()
 
 	h := handler{
 		userUsecase,
+		companyUsecase,
 	}
 
-	// user router
+	// users router
 	router.POST("/users/register", h.Register)
 	router.POST("/users/login", h.Login)
 	router.POST("/users/refresh-token", h.RefreshToken)
 	router.POST("/users/logout", h.Logout)
+
+	// companies router
+	router.GET("/companies/dress-codes", h.GetListDresscode)
+	router.GET("/companies/benefit-codes", h.GetListBenefitcode)
+	router.GET("/companies/size-codes", h.GetListSizecode)
 
 	return
 }

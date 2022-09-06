@@ -11,3 +11,9 @@ type UserRepository interface {
 	GetUserById(ctx context.Context, id string) (result models.User, err error)
 	CreateUser(ctx context.Context, args models.User) (result models.User, err error)
 }
+
+type CompanyRepository interface {
+	GetListDresscode(ctx context.Context) (result []models.CompanySubCode, err error)
+	GetListBenefitcode(ctx context.Context) (result []models.CompanySubCode, err error)
+	GetListSizecode(ctx context.Context) (result []models.CompanySubCode, err error)
+}
