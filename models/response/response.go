@@ -31,6 +31,8 @@ const (
 	errIdTokenExpired           = "Token expired"
 	errEnTokenInvalid           = "Token invalid"
 	errIdTokenInvalid           = "Token invalid"
+	errEnNotFound               = "Data not found"
+	errIdNotFound               = "Data tidak ditemukan"
 )
 
 // status code
@@ -40,10 +42,11 @@ const (
 	statusBadRequest             = http.StatusBadRequest
 	statusValidatorFail          = http.StatusBadRequest
 	statusRegisEmailNotAvailable = http.StatusBadRequest
-	statusUserNotFound           = http.StatusBadRequest
+	statusUserNotFound           = http.StatusNotFound
 	statusPwdNotMatch            = http.StatusBadRequest
 	statusTokenExpired           = http.StatusBadRequest
 	statusTokenInvalid           = http.StatusBadRequest
+	statusNotFound               = http.StatusNotFound
 )
 
 // constant increasing sequences
@@ -57,6 +60,7 @@ const (
 	ErrorPwdNotMatch
 	ErrorTokenExpired
 	ErrorTokenInvalid
+	ErrorNotFound
 )
 
 type ReturningValue struct {
@@ -88,6 +92,7 @@ var mapping = map[int]ReturningValue{
 	ErrorPwdNotMatch:  add(statusPwdNotMatch, errEnPwdNotMatch, errIdPwdNotMatch),
 	ErrorTokenExpired: add(statusTokenExpired, errEnTokenExpired, errIdTokenExpired),
 	ErrorTokenInvalid: add(statusTokenInvalid, errEnTokenInvalid, errIdTokenInvalid),
+	ErrorNotFound:     add(statusNotFound, errEnNotFound, errIdNotFound),
 }
 
 func NewErrork(code int) error {

@@ -24,7 +24,7 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
 | [JP-06](readme.md#get-detail-company) | Get detail company | As a candidate, i can see detail of company |
 | [JP-07](readme.md#review-company) | Review company | As a candidate, i can review company with rating |
 | [JP-08](readme.md#get-list-review-company) | Get list review company | As a candidate, i can get list of all reviews of company |
-| [JP-09](readme.md#get-list-review-company) | Get list company dresscode, benefits, and size | As a company, i can get list code dresscode, benefits and size |
+| [JP-09](readme.md#get-list-dresscode-company) | Get list company dresscode, benefits, and size | As a company, i can get list code dresscode, benefits and size |
 
 ## Api Specs
 
@@ -143,3 +143,102 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
 ### Get Detail Company
 ### Review Company
 ### Get List Review Company
+### Get List Dresscode Company
+  - Description : Endpoint for get list code dresscode company.
+  - Method : `GET`
+  - Endpoint : `/companies/dress-codes`
+  - Parameter : -
+  - Request: -
+  - Response
+    - Success
+      ```
+      {
+        "status": int,
+        "message": {
+            "en": "string",
+            "id": "string"
+        },
+        "data": [
+            {
+                "id": int,
+                "value": "string"
+            }
+        ]
+      }
+      ```
+    - Failed
+      ```
+      {
+        "status": int,
+        "message": {
+            "en": "string",
+            "id": "string"
+        }
+      }
+      ```
+### Get List Benefits Company
+  - Description : Endpoint for get list code benefits company.
+  - Method : `GET`
+  - Endpoint : `/companies/benefit-codes`
+  - Parameter : -
+  - Request: -
+  - Response
+    - Success
+      ```
+      {
+        "status": int,
+        "message": {
+            "en": "string",
+            "id": "string"
+        },
+        "data": [
+            {
+                "id": int,
+                "value": "string"
+            }
+        ]
+      }
+      ```
+    - Failed
+      ```
+      {
+        "status": int,
+        "message": {
+            "en": "string",
+            "id": "string"
+        }
+      }
+      ```
+### Get List Size Company
+  - Description : Endpoint for get list code size company.
+  - Method : `GET`
+  - Endpoint : `/companies/size-codes`
+  - Parameter : -
+  - Request: -
+  - Response
+    - Success
+      ```
+      {
+        "status": int,
+        "message": {
+            "en": "string",
+            "id": "string"
+        },
+        "data": [
+            {
+                "id": int,
+                "value": "string"
+            }
+        ]
+      }
+      ```
+    - Failed
+      ```
+      {
+        "status": int,
+        "message": {
+            "en": "string",
+            "id": "string"
+        }
+      }
+      ```

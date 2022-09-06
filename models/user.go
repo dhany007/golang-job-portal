@@ -27,14 +27,3 @@ type UserLoginResponse struct {
 	RefreshToken string `json:"refresh_token,omitempty"`
 	AccessToken  string `json:"access_token"`
 }
-
-type CompanyModel struct {
-	ID    string `json:"id" db:"id"`
-	Email string `json:"email" db:"email"`
-}
-
-type CandidateModel struct {
-	ID        string `json:"id" db:"id"`
-	Email     string `json:"email" db:"email"`
-	FirstName string `json:"first_name" db:"first_name"`
-}

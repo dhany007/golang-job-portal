@@ -10,7 +10,10 @@ func (c *Config) InitService() (err error) {
 	userRepository := postgres.NewUserRepository(c.DB)
 	userUsecase := usecase.NewUserUsecase(userRepository)
 
-	router := rest.NewHandler(userUsecase)
+	companyRepository := postgres.NewCompanyRepository(c.DB)
+	companyUsecase := usecase.NewCompanyUsecase(companyRepository)
+
+	router := rest.NewHandler(userUsecase, companyUsecase)
 
 	c.Router = router
 	return nil
