@@ -148,13 +148,7 @@ func (c companyRepository) CheckCompanyById(ctx context.Context, id string) (res
 	return
 }
 
-func (c companyRepository) UpdateCompany(ctx context.Context, args models.Company) (result models.Company, err error) {
-	var (
-		row      *sqlx.Rows
-		benefits []models.CompanySubCode
-		benefit  models.CompanySubCode
-	)
-
+func (c companyRepository) UpdateCompany(ctx context.Context, args models.Company) (err error) {
 	// update benefit
 	_, err = c.DB.ExecContext(
 		ctx,
@@ -194,44 +188,6 @@ func (c companyRepository) UpdateCompany(ctx context.Context, args models.Compan
 		}
 	}
 
-	// get last updated company
-	row, err = c.DB.QueryxContext(
-		ctx,
-		queries.QueryDetailCompanyByID,
-		args.ID,
-	)
-	if err != nil {
-		log.Printf("[company] [repository] [UpdateCompany] while queries.QueryGetDetailCompanyByID, err:%+v\n", err)
-		return
-	}
-
-	defer row.Close()
-
-	for row.Next() {
-		err = row.StructScan(&result)
-		if err != nil {
-			log.Printf("[company] [repository] [UpdateCompany] while StructScan, err:%+v\n", err)
-			return
-		}
-	}
-
-	// get last benefit instered
-	row, err = c.DB.QueryxContext(ctx, queries.QueryListBenefitByCompanyID, args.ID)
-	if err != nil {
-		log.Printf("[company] [repository] [UpdateCompany] while queries.QueryListBenefitByCompanyID, err:%+v\n", err)
-		return
-	}
-
-	for row.Next() {
-		err = row.StructScan(&benefit)
-		if err != nil {
-			log.Printf("[company] [repository] [UpdateCompany] while StructScan, err:%+v\n", err)
-			return
-		}
-		benefits = append(benefits, benefit)
-	}
-
-	result.Benefit = benefits
 	return
 }
 
@@ -258,6 +214,72 @@ func (c companyRepository) GetListCompanies(ctx context.Context) (result []model
 
 		result = append(result, company)
 	}
+
+	return
+}
+
+func (c companyRepository) GetDetailCompany(ctx context.Context, companyId string) (result models.Company, err error) {
+	var (
+		row      *sqlx.Rows
+		benefits []models.CompanySubCode
+		benefit  models.CompanySubCode
+		reviews  models.CompanyRating
+	)
+
+	// get detail company
+	row, err = c.DB.QueryxContext(
+		ctx,
+		queries.QueryDetailCompanyByID,
+		companyId,
+	)
+	if err != nil {
+		log.Printf("[company] [repository] [GetDetailCompany] while queries.QueryGetDetailCompanyByID, err:%+v\n", err)
+		return
+	}
+
+	defer row.Close()
+
+	for row.Next() {
+		err = row.StructScan(&result)
+		if err != nil {
+			log.Printf("[company] [repository] [GetDetailCompany] while StructScan, err:%+v\n", err)
+			return
+		}
+	}
+
+	// get benefit
+	row, err = c.DB.QueryxContext(ctx, queries.QueryListBenefitByCompanyID, companyId)
+	if err != nil {
+		log.Printf("[company] [repository] [GetDetailCompany] while queries.QueryListBenefitByCompanyID, err:%+v\n", err)
+		return
+	}
+
+	for row.Next() {
+		err = row.StructScan(&benefit)
+		if err != nil {
+			log.Printf("[company] [repository] [GetDetailCompany] while StructScan, err:%+v\n", err)
+			return
+		}
+		benefits = append(benefits, benefit)
+	}
+
+	result.Benefit = benefits
+
+	// get review
+	row, err = c.DB.QueryxContext(ctx, queries.QueryRatingCompany, companyId)
+	if err != nil {
+		log.Printf("[company] [repository] [GetDetailCompany] while queries.QueryRatingCompany, err:%+v\n", err)
+		return
+	}
+
+	for row.Next() {
+		err = row.StructScan(&reviews)
+		if err != nil {
+			log.Printf("[company] [repository] [GetDetailCompany] while StructScan, err:%+v\n", err)
+			return
+		}
+	}
+	result.Review = reviews
 
 	return
 }

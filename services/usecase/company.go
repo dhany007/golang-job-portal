@@ -78,7 +78,7 @@ func (c companyUsecase) UpdateCompany(ctx context.Context, args models.CompanyAr
 		company models.Company
 	)
 
-	// TODO: check company exists
+	// check company exists
 	company, err = c.repo.CheckCompanyById(ctx, args.ID)
 	if err != nil {
 		log.Println("[company] [usecase] [UpdateCompany] while CheckCompanyById")
@@ -90,7 +90,7 @@ func (c companyUsecase) UpdateCompany(ctx context.Context, args models.CompanyAr
 		return
 	}
 
-	// TODO: check email availability if change
+	// check email availability if change
 	company, _ = c.repo.CheckCompanyByEmail(ctx, args.Email)
 	if company.ID != "" {
 		err = response.NewErrork(response.ErrorRegisEmail)
@@ -115,8 +115,16 @@ func (c companyUsecase) UpdateCompany(ctx context.Context, args models.CompanyAr
 		ModifiedAt:       time.Now(),
 	}
 
-	// TODO: repository update company
-	result, err = c.repo.UpdateCompany(ctx, company)
+	// repository update company
+	err = c.repo.UpdateCompany(ctx, company)
+	if err != nil {
+		err = response.NewErrork(response.ErrorServerError)
+		log.Printf("[company] [usecase] [UpdateCompany] while ErrorServerError, email:%+v\n", args.Email)
+		return result, err
+	}
+
+	// get detail company
+	result, err = c.repo.GetDetailCompany(ctx, args.ID)
 	if err != nil {
 		err = response.NewErrork(response.ErrorServerError)
 		log.Printf("[company] [usecase] [UpdateCompany] while ErrorServerError, email:%+v\n", args.Email)
@@ -138,6 +146,25 @@ func (c companyUsecase) GetListCompanies(ctx context.Context) (result []models.C
 	if result == nil {
 		err = response.NewErrork(response.ErrorNotFound)
 		log.Println("[company] [usecase] [GetListCompanies] while ErrorNotFound")
+		return
+	}
+
+	return
+}
+
+func (c companyUsecase) GetDetailCompany(ctx context.Context, companyID string) (result models.Company, err error) {
+	// repository get detail company
+	result, err = c.repo.GetDetailCompany(ctx, companyID)
+	if err != nil {
+		err = response.NewErrork(response.ErrorServerError)
+		log.Printf("[company] [usecase] [GetDetailCompany] while ErrorServerError, companyID:%+v\n", companyID)
+		return result, err
+	}
+
+	// check if data not found
+	if result.Email == "" {
+		err = response.NewErrork(response.ErrorNotFound)
+		log.Println("[company] [usecase] [GetDetailCompany] while ErrorNotFound")
 		return
 	}
 

@@ -25,6 +25,7 @@ type Company struct {
 	Dress            string           `json:"dress" db:"dress"`
 	Size             string           `json:"size" db:"size"`
 	Benefit          []CompanySubCode `json:"benefit"`
+	Review           CompanyRating    `json:"review"`
 	CreatedAt        time.Time        `json:"created_at" db:"created_at"`
 	ModifiedAt       time.Time        `json:"modified_at" db:"modified_at"`
 }
