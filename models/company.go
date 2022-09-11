@@ -43,3 +43,15 @@ type CompanyArgument struct {
 	Size             int              `json:"size" valid:"required"`
 	Benefit          []CompanySubCode `json:"benefit" valid:"required"`
 }
+
+type CompanyRating struct {
+	Rating      float64 `json:"rating" db:"rating"`
+	CountReview int     `json:"count_review" db:"count_review"`
+}
+
+type Companies struct {
+	ID          string  `json:"id" db:"id"`
+	Name        string  `json:"name" db:"name"`
+	Rating      float64 `json:"rating" db:"rating"`
+	CountReview int     `json:"count_review" db:"count_review"`
+}

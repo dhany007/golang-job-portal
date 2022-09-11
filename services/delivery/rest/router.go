@@ -33,6 +33,7 @@ func NewHandler(
 	router.GET("/companies/dress-codes", middleware.Authentication(h.GetListDresscode))
 	router.GET("/companies/benefit-codes", middleware.Authentication(h.GetListBenefitcode))
 	router.GET("/companies/size-codes", middleware.Authentication(h.GetListSizecode))
+	router.GET("/companies", middleware.Authentication(h.GetListCompanies))
 	router.PUT("/companies/:companyId", middleware.Authentication(h.UpdateCompany))
 
 	return
