@@ -16,4 +16,5 @@ type CompanyUsecase interface {
 	GetListDresscode(ctx context.Context) (result []models.CompanySubCode, err error)
 	GetListBenefitcode(ctx context.Context) (result []models.CompanySubCode, err error)
 	GetListSizecode(ctx context.Context) (result []models.CompanySubCode, err error)
+	UpdateCompany(ctx context.Context, args models.CompanyArgument) (result models.Company, err error)
 }

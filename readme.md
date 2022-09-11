@@ -138,6 +138,69 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       }
       ```
 ### Update Profil Company
+  - Description : Endpoint for update company, check if company_id is same with id user login
+  - Method : `POST`
+  - Endpoint : `/companies/:companyID`
+  - Parameter :
+  - Request: -
+    ```
+    {
+      "email": string,
+      "name": string,
+      "description": string,
+      "address": string,
+      "website": string,
+      "phone_number": string,
+      "telp_number": string,
+      "profil_picture_url": string,
+      "dress": int,
+      "size": int,
+      "benefit": [
+          {"id": int},
+      ]
+    }
+    ```
+  - Response
+    - Success
+      ```
+      {
+        "status": int,
+        "message": {
+            "en": "string",
+            "id": "string"
+        },
+        "data": {
+            "email": "string",
+            "name": "string",
+            "description": "string",
+            "address": "string",
+            "website": "string",
+            "phone_number": "string",
+            "telp_number": "string",
+            "profil_picture_url": "string",
+            "dress": "string",
+            "size": "strings",
+            "benefit": [
+                {
+                    "id": int,
+                    "value": "string"
+                }
+            ],
+            "created_at": "string",
+            "modified_at": "string"
+        }
+      }
+      ```
+    - Failed
+      ```
+      {
+        "status": int,
+        "message": {
+            "en": "string",
+            "id": "string"
+        }
+      }
+      ```
 ### Update Profil Candidate
 ### Get List Company
 ### Get Detail Company

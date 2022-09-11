@@ -3,6 +3,8 @@ package usecase
 import (
 	"context"
 	"log"
+	"strconv"
+	"time"
 
 	"github.com/dhany007/golang-job-portal/models"
 	"github.com/dhany007/golang-job-portal/models/response"
@@ -66,6 +68,59 @@ func (c companyUsecase) GetListSizecode(ctx context.Context) (result []models.Co
 		err = response.NewErrork(response.ErrorNotFound)
 		log.Println("[company] [usecase] [GetListSizecode] while ErrorNotFound")
 		return
+	}
+
+	return
+}
+
+func (c companyUsecase) UpdateCompany(ctx context.Context, args models.CompanyArgument) (result models.Company, err error) {
+	var (
+		company models.Company
+	)
+
+	// TODO: check company exists
+	company, err = c.repo.CheckCompanyById(ctx, args.ID)
+	if err != nil {
+		log.Println("[company] [usecase] [UpdateCompany] while CheckCompanyById")
+		return
+	}
+	if company.ID == "" {
+		err = response.NewErrork(response.ErrorNotFound)
+		log.Println("[company] [usecase] [UpdateCompany] while ErrorNotFound")
+		return
+	}
+
+	// TODO: check email availability if change
+	company, _ = c.repo.CheckCompanyByEmail(ctx, args.Email)
+	if company.ID != "" {
+		err = response.NewErrork(response.ErrorRegisEmail)
+		log.Println("[company] [usecase] [UpdateCompany] while CheckCompanyByEmail")
+		return
+	}
+
+	// reinitialize data
+	company = models.Company{
+		ID:               args.ID,
+		Email:            args.Email,
+		Name:             args.Name,
+		Description:      args.Description,
+		Address:          args.Address,
+		Website:          args.Website,
+		PhoneNumber:      args.PhoneNumber,
+		TelpNumber:       args.TelpNumber,
+		ProfilPictureUrl: args.ProfilPictureUrl,
+		Dress:            strconv.Itoa(args.Dress),
+		Size:             strconv.Itoa(args.Size),
+		Benefit:          args.Benefit,
+		ModifiedAt:       time.Now(),
+	}
+
+	// TODO: repository update company
+	result, err = c.repo.UpdateCompany(ctx, company)
+	if err != nil {
+		err = response.NewErrork(response.ErrorServerError)
+		log.Printf("[company] [usecase] [UpdateCompany] while ErrorServerError, email:%+v\n", args.Email)
+		return result, err
 	}
 
 	return
