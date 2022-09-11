@@ -16,4 +16,7 @@ type CompanyRepository interface {
 	GetListDresscode(ctx context.Context) (result []models.CompanySubCode, err error)
 	GetListBenefitcode(ctx context.Context) (result []models.CompanySubCode, err error)
 	GetListSizecode(ctx context.Context) (result []models.CompanySubCode, err error)
+	CheckCompanyByEmail(ctx context.Context, email string) (result models.Company, err error)
+	CheckCompanyById(ctx context.Context, id string) (result models.Company, err error)
+	UpdateCompany(ctx context.Context, args models.Company) (result models.Company, err error)
 }

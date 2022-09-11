@@ -1,11 +1,13 @@
 package utils
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/dhany007/golang-job-portal/models"
 	"github.com/dhany007/golang-job-portal/models/response"
 )
 
@@ -66,4 +68,15 @@ func ValidateToken(tokenStr string) (result jwt.MapClaims, err error) {
 	}
 
 	return claims, nil
+}
+
+func GetAuthorization(ctx context.Context) (result models.Authorization) {
+	auth := ctx.Value(models.Authorization{}).(jwt.MapClaims)
+
+	result = models.Authorization{
+		ID:    auth["id"].(string),
+		Email: auth["email"].(string),
+	}
+
+	return
 }

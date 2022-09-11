@@ -27,3 +27,8 @@ type UserLoginResponse struct {
 	RefreshToken string `json:"refresh_token,omitempty"`
 	AccessToken  string `json:"access_token"`
 }
+
+type Authorization struct {
+	ID    string
+	Email string
+}

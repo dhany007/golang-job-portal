@@ -99,3 +99,138 @@ func (c companyRepository) GetListSizecode(ctx context.Context) (result []models
 
 	return
 }
+
+func (c companyRepository) CheckCompanyByEmail(ctx context.Context, email string) (result models.Company, err error) {
+	var (
+		row *sqlx.Rows
+	)
+
+	row, err = c.DB.QueryxContext(ctx, queries.QueryCheckAvailableEmail, email)
+	if err != nil {
+		log.Printf("[company] [repository] [CheckCompanyByEmail] while queries.QueryCheckCompanyByEmail, err:%+v\n", err)
+		return
+	}
+
+	defer row.Close()
+
+	for row.Next() {
+		err = row.StructScan(&result)
+		if err != nil {
+			log.Printf("[company] [repository] [CheckCompanyByEmail] while StructScan, err:%+v\n", err)
+			return
+		}
+	}
+
+	return
+}
+
+func (c companyRepository) CheckCompanyById(ctx context.Context, id string) (result models.Company, err error) {
+	var (
+		row *sqlx.Rows
+	)
+
+	row, err = c.DB.QueryxContext(ctx, queries.QueryCheckCompanyById, id)
+	if err != nil {
+		log.Printf("[company] [repository] [CheckCompanyById] while queries.QueryCheckCompanyById, err:%+v\n", err)
+		return
+	}
+
+	defer row.Close()
+
+	for row.Next() {
+		err = row.StructScan(&result)
+		if err != nil {
+			log.Printf("[company] [repository] [CheckCompanyById] while StructScan, err:%+v\n", err)
+			return
+		}
+	}
+
+	return
+}
+
+func (c companyRepository) UpdateCompany(ctx context.Context, args models.Company) (result models.Company, err error) {
+	var (
+		row      *sqlx.Rows
+		benefits []models.CompanySubCode
+		benefit  models.CompanySubCode
+	)
+
+	// update benefit
+	_, err = c.DB.ExecContext(
+		ctx,
+		queries.QueryUpdateCompany,
+		args.Email,
+		args.Name,
+		args.Description,
+		args.Address,
+		args.Website,
+		args.PhoneNumber,
+		args.TelpNumber,
+		args.ProfilPictureUrl,
+		args.Dress,
+		args.Size,
+		args.ModifiedAt,
+		args.ID,
+	)
+
+	if err != nil {
+		log.Printf("[company] [repository] [UpdateCompany] while QueryUpdateCompany, err:%+v\n", err)
+		return
+	}
+
+	// delete benefit existing
+	_, err = c.DB.ExecContext(ctx, queries.QueryDeleteBenefitsByCompanyID, args.ID)
+	if err != nil {
+		log.Printf("[company] [repository] [UpdateCompany] while QueryDeleteBenefitsByCompanyID, err:%+v\n", err)
+		return
+	}
+
+	// insert benefit company
+	for _, v := range args.Benefit {
+		_, err = c.DB.ExecContext(ctx, queries.QueryInsertBenefit, args.ID, v.ID)
+		if err != nil {
+			log.Printf("[company] [repository] [UpdateCompany] while QueryInsertBenefit, err:%+v\n", err)
+			return
+		}
+	}
+
+	// get last updated company
+	row, err = c.DB.QueryxContext(
+		ctx,
+		queries.QueryDetailCompanyByID,
+		args.ID,
+	)
+	if err != nil {
+		log.Printf("[company] [repository] [UpdateCompany] while queries.QueryGetDetailCompanyByID, err:%+v\n", err)
+		return
+	}
+
+	defer row.Close()
+
+	for row.Next() {
+		err = row.StructScan(&result)
+		if err != nil {
+			log.Printf("[company] [repository] [UpdateCompany] while StructScan, err:%+v\n", err)
+			return
+		}
+	}
+
+	// get last benefit instered
+	row, err = c.DB.QueryxContext(ctx, queries.QueryListBenefitByCompanyID, args.ID)
+	if err != nil {
+		log.Printf("[company] [repository] [UpdateCompany] while queries.QueryListBenefitByCompanyID, err:%+v\n", err)
+		return
+	}
+
+	for row.Next() {
+		err = row.StructScan(&benefit)
+		if err != nil {
+			log.Printf("[company] [repository] [UpdateCompany] while StructScan, err:%+v\n", err)
+			return
+		}
+		benefits = append(benefits, benefit)
+	}
+
+	result.Benefit = benefits
+	return
+}

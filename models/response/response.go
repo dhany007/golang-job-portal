@@ -21,8 +21,8 @@ const (
 	errIdUndefined              = "Error tidak terdefinisi"
 	errEnBadRequest             = "Invalid request"
 	errIdBadRequest             = "Request tidak sah"
-	errEnRegisEmailNotAvailable = "Email registration not available"
-	errIdRegisEmailNotAvailable = "Email registrasi tidak dapat digunakan"
+	errEnRegisEmailNotAvailable = "Email not available"
+	errIdRegisEmailNotAvailable = "Email tidak dapat digunakan"
 	errEnUserNotFound           = "User with email not found"
 	errIdUserNotFound           = "User dengan email tidak ditemukan"
 	errEnPwdNotMatch            = "Password not match"
@@ -33,6 +33,10 @@ const (
 	errIdTokenInvalid           = "Token invalid"
 	errEnNotFound               = "Data not found"
 	errIdNotFound               = "Data tidak ditemukan"
+	errEnUnauthorized           = "Unauthorized"
+	errIdUnauthorized           = "Unauthorized"
+	errEnInvalidParameter       = "Invalid parameter ID"
+	errIdInvalidParameter       = "Parameter ID tidak sah"
 )
 
 // status code
@@ -47,6 +51,8 @@ const (
 	statusTokenExpired           = http.StatusBadRequest
 	statusTokenInvalid           = http.StatusBadRequest
 	statusNotFound               = http.StatusNotFound
+	statusUnautorized            = http.StatusUnauthorized
+	statusInvalidParameterID     = http.StatusBadRequest
 )
 
 // constant increasing sequences
@@ -61,6 +67,8 @@ const (
 	ErrorTokenExpired
 	ErrorTokenInvalid
 	ErrorNotFound
+	ErrorUnauthorized
+	ErrorInvalidParameter
 )
 
 type ReturningValue struct {
@@ -83,16 +91,18 @@ func add(status int, en string, id string) ReturningValue {
 }
 
 var mapping = map[int]ReturningValue{
-	ErrorServerError:  add(statusServerError, errEnServerError, errIdServerError),
-	ErrorBadRequest:   add(statusBadRequest, errEnBadRequest, errIdBadRequest),
-	SuccesOk:          add(statusOk, successEnGeneral, successIdGeneral),
-	ErrorValidation:   add(statusValidatorFail, "", ""),
-	ErrorRegisEmail:   add(statusRegisEmailNotAvailable, errEnRegisEmailNotAvailable, errIdRegisEmailNotAvailable),
-	ErrorUserNotFound: add(statusUserNotFound, errEnUserNotFound, errIdUserNotFound),
-	ErrorPwdNotMatch:  add(statusPwdNotMatch, errEnPwdNotMatch, errIdPwdNotMatch),
-	ErrorTokenExpired: add(statusTokenExpired, errEnTokenExpired, errIdTokenExpired),
-	ErrorTokenInvalid: add(statusTokenInvalid, errEnTokenInvalid, errIdTokenInvalid),
-	ErrorNotFound:     add(statusNotFound, errEnNotFound, errIdNotFound),
+	ErrorServerError:      add(statusServerError, errEnServerError, errIdServerError),
+	ErrorBadRequest:       add(statusBadRequest, errEnBadRequest, errIdBadRequest),
+	SuccesOk:              add(statusOk, successEnGeneral, successIdGeneral),
+	ErrorValidation:       add(statusValidatorFail, "", ""),
+	ErrorRegisEmail:       add(statusRegisEmailNotAvailable, errEnRegisEmailNotAvailable, errIdRegisEmailNotAvailable),
+	ErrorUserNotFound:     add(statusUserNotFound, errEnUserNotFound, errIdUserNotFound),
+	ErrorPwdNotMatch:      add(statusPwdNotMatch, errEnPwdNotMatch, errIdPwdNotMatch),
+	ErrorTokenExpired:     add(statusTokenExpired, errEnTokenExpired, errIdTokenExpired),
+	ErrorTokenInvalid:     add(statusTokenInvalid, errEnTokenInvalid, errIdTokenInvalid),
+	ErrorNotFound:         add(statusNotFound, errEnNotFound, errIdNotFound),
+	ErrorUnauthorized:     add(statusUnautorized, errEnUnauthorized, errIdUnauthorized),
+	ErrorInvalidParameter: add(statusInvalidParameterID, errEnInvalidParameter, errIdInvalidParameter),
 }
 
 func NewErrork(code int) error {
