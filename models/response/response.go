@@ -57,8 +57,8 @@ const (
 
 // constant increasing sequences
 const (
-	ErrorServerError = iota + 1
-	ErrorBadRequest
+	ErrorServerError = 0
+	ErrorBadRequest  = iota + 1
 	SuccesOk
 	ErrorValidation
 	ErrorRegisEmail

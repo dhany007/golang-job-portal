@@ -70,6 +70,7 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
         }
       }
       ```
+
 ### User Login
   - Description: User for login, user will get access-token for access all endpoint and set to cookie
   - Method : `POST`
@@ -107,6 +108,7 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
         }
       }
       ```
+
 ### User Refresh Token
   - Description : Endpoint for refresh access-token from refresh-token. If refresh-token expired, user should login again.
   - Method : `POST`
@@ -137,6 +139,7 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
         }
       }
       ```
+
 ### Update Profil Company
   - Description : Endpoint for update company, check if company_id is same with id user login
   - Method : `POST`
@@ -201,11 +204,51 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
         }
       }
       ```
+
 ### Update Profil Candidate
+
 ### Get List Company
+  - Description : Endpoint for get list companies.
+  - Method : `GET`
+  - Endpoint : `/companies`
+  - Parameter : -
+  - Request: -
+  - Response
+    - Success
+      ```
+      {
+        "status": int,
+        "message": {
+          "en": "string",
+          "id": "string"
+        },
+        "data": [
+          {
+            "id": "string",
+            "name": "string",
+            "rating": float,
+            "count_review": int
+          },
+        ]
+      }
+      ```
+    - Failed
+      ```
+      {
+        "status": int,
+        "message": {
+          "en": "string",
+          "id": "string"
+        }
+      }
+      ```
+
 ### Get Detail Company
+
 ### Review Company
+
 ### Get List Review Company
+
 ### Get List Dresscode Company
   - Description : Endpoint for get list code dresscode company.
   - Method : `GET`
@@ -239,6 +282,7 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
         }
       }
       ```
+
 ### Get List Benefits Company
   - Description : Endpoint for get list code benefits company.
   - Method : `GET`
@@ -272,6 +316,7 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
         }
       }
       ```
+
 ### Get List Size Company
   - Description : Endpoint for get list code size company.
   - Method : `GET`

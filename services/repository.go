@@ -19,4 +19,5 @@ type CompanyRepository interface {
 	CheckCompanyByEmail(ctx context.Context, email string) (result models.Company, err error)
 	CheckCompanyById(ctx context.Context, id string) (result models.Company, err error)
 	UpdateCompany(ctx context.Context, args models.Company) (result models.Company, err error)
+	GetListCompanies(ctx context.Context) (result []models.Companies, err error)
 }

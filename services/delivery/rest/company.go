@@ -121,3 +121,24 @@ func (h handler) UpdateCompany(w http.ResponseWriter, r *http.Request, ps httpro
 	// return data
 	response.ResultWithData(w, response.SuccesOk, result)
 }
+
+func (h handler) GetListCompanies(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	var (
+		ctx    context.Context
+		result []models.Companies
+		err    error
+	)
+
+	// usecase getbenefitscode
+	ctx = r.Context()
+	result, err = h.companyUsecase.GetListCompanies(ctx)
+	if err != nil {
+		errCode, _ := strconv.Atoi(err.Error())
+		log.Println("[company] [delivery] [GetListCompanies] while companyUsecase.GetListCompanies")
+		response.Result(w, errCode)
+		return
+	}
+
+	// return data
+	response.ResultWithData(w, response.SuccesOk, result)
+}

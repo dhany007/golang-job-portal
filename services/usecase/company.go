@@ -125,3 +125,21 @@ func (c companyUsecase) UpdateCompany(ctx context.Context, args models.CompanyAr
 
 	return
 }
+
+func (c companyUsecase) GetListCompanies(ctx context.Context) (result []models.Companies, err error) {
+	// get companies
+	result, err = c.repo.GetListCompanies(ctx)
+	if err != nil {
+		log.Printf("[company] [usecase] [GetListCompanies] while repo.GetListCompanies, err:%+v\n", err)
+		return
+	}
+
+	// check if data not found
+	if result == nil {
+		err = response.NewErrork(response.ErrorNotFound)
+		log.Println("[company] [usecase] [GetListCompanies] while ErrorNotFound")
+		return
+	}
+
+	return
+}

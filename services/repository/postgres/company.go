@@ -234,3 +234,30 @@ func (c companyRepository) UpdateCompany(ctx context.Context, args models.Compan
 	result.Benefit = benefits
 	return
 }
+
+func (c companyRepository) GetListCompanies(ctx context.Context) (result []models.Companies, err error) {
+	var (
+		row     *sqlx.Rows
+		company models.Companies
+	)
+
+	row, err = c.DB.QueryxContext(ctx, queries.QueryListCompanies)
+	if err != nil {
+		log.Printf("[company] [repository] [GetListCompanies] while QueryListCompanies, err:%+v\n", err)
+		return
+	}
+
+	defer row.Close()
+
+	for row.Next() {
+		err = row.StructScan(&company)
+		if err != nil {
+			log.Printf("[company] [repository] [GetListCompanies] while StructScan, err:%+v\n", err)
+			return
+		}
+
+		result = append(result, company)
+	}
+
+	return
+}
