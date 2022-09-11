@@ -83,7 +83,7 @@ func (h handler) UpdateCompany(w http.ResponseWriter, r *http.Request, ps httpro
 		args   models.CompanyArgument
 		err    error
 	)
-	// TODO: check param id
+	// check param id
 	companyId := ps.ByName("companyId")
 	if err != nil {
 		log.Printf("[company] [delivery] [UpdateCompany] while get paramater id, err:%+v\n", err)
@@ -91,7 +91,7 @@ func (h handler) UpdateCompany(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	// TODO: check if current user as company is same with company id
+	// check if current user as company is same with company id
 	userID := utils.GetAuthorization(r.Context()).ID
 	if userID != companyId {
 		log.Println("[company] [delivery] [UpdateCompany] while ErrorUnauthorized")
@@ -99,7 +99,7 @@ func (h handler) UpdateCompany(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	// TODO: binding body json
+	// binding body json
 	err = json.NewDecoder(r.Body).Decode(&args)
 	if err != nil {
 		log.Printf("[company] [delivery] [UpdateCompany] while body binding, err:%+v\n", err)
@@ -109,7 +109,7 @@ func (h handler) UpdateCompany(w http.ResponseWriter, r *http.Request, ps httpro
 
 	args.ID = companyId
 
-	// TODO: usecase update company
+	// usecase update company
 	result, err = h.companyUsecase.UpdateCompany(r.Context(), args)
 	if err != nil {
 		errCode, _ := strconv.Atoi(err.Error())
@@ -135,6 +135,32 @@ func (h handler) GetListCompanies(w http.ResponseWriter, r *http.Request, ps htt
 	if err != nil {
 		errCode, _ := strconv.Atoi(err.Error())
 		log.Println("[company] [delivery] [GetListCompanies] while companyUsecase.GetListCompanies")
+		response.Result(w, errCode)
+		return
+	}
+
+	// return data
+	response.ResultWithData(w, response.SuccesOk, result)
+}
+
+func (h handler) GetDetailCompany(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	var (
+		result models.Company
+		err    error
+	)
+	// check param id
+	companyId := ps.ByName("companyId")
+	if err != nil {
+		log.Printf("[company] [delivery] [DetailCompany] while get paramater id, err:%+v\n", err)
+		response.ResultError(w, response.ErrorInvalidParameter, err)
+		return
+	}
+
+	// usecase detail company
+	result, err = h.companyUsecase.GetDetailCompany(r.Context(), companyId)
+	if err != nil {
+		errCode, _ := strconv.Atoi(err.Error())
+		log.Println("[company] [delivery] [DetailCompany] while companyUsecase.GetDetailCompany")
 		response.Result(w, errCode)
 		return
 	}

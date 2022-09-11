@@ -47,16 +47,16 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       {
         "status": int,
         "message": {
-            "en": "string",
-            "id": "string"
+          "en": "string",
+          "id": "string"
         },
         "data": {
-            "id": string,uuid,
-            "email": string,
-            "is_active": int,
-            "role": int,
-            "created_at": string,time,utc,
-            "modified_at": string,time,utc
+          "id": string,uuid,
+          "email": string,
+          "is_active": int,
+          "role": int,
+          "created_at": string,time,utc,
+          "modified_at": string,time,utc
         }
       }
       ```
@@ -65,8 +65,8 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       {
         "status": int,
         "message": {
-            "en": "string",
-            "id": "string"
+          "en": "string",
+          "id": "string"
         }
       }
       ```
@@ -89,12 +89,12 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       {
         "status": int,
         "message": {
-            "en": "string",
-            "id": "string"
+          "en": "string",
+          "id": "string"
         },
         "data": {
-            "refresh-token": string,uuid,
-            "access-token": string,uuid
+          "refresh-token": string,uuid,
+          "access-token": string,uuid
         }
       }
       ```
@@ -103,8 +103,8 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       {
         "status": int,
         "message": {
-            "en": "string",
-            "id": "string"
+          "en": "string",
+          "id": "string"
         }
       }
       ```
@@ -121,11 +121,11 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       {
         "status": int,
         "message": {
-            "en": "string",
-            "id": "string"
+          "en": "string",
+          "id": "string"
         },
         "data": {
-            "access-token": string,uuid
+          "access-token": string,uuid
         }
       }
       ```
@@ -134,8 +134,8 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       {
         "status": int,
         "message": {
-            "en": "string",
-            "id": "string"
+          "en": "string",
+          "id": "string"
         }
       }
       ```
@@ -159,7 +159,7 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       "dress": int,
       "size": int,
       "benefit": [
-          {"id": int},
+        {"id": int},
       ]
     }
     ```
@@ -169,28 +169,32 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       {
         "status": int,
         "message": {
-            "en": "string",
-            "id": "string"
+          "en": "string",
+          "id": "string"
         },
         "data": {
-            "email": "string",
-            "name": "string",
-            "description": "string",
-            "address": "string",
-            "website": "string",
-            "phone_number": "string",
-            "telp_number": "string",
-            "profil_picture_url": "string",
-            "dress": "string",
-            "size": "strings",
-            "benefit": [
-                {
-                    "id": int,
-                    "value": "string"
-                }
-            ],
-            "created_at": "string",
-            "modified_at": "string"
+          "email": "string",
+          "name": "string",
+          "description": "string",
+          "address": "string",
+          "website": "string",
+          "phone_number": "string",
+          "telp_number": "string",
+          "profil_picture_url": "string",
+          "dress": "string",
+          "size": "strings",
+          "benefit": [
+            {
+              "id": int,
+              "value": "string"
+            }
+          ],
+          "review": {
+            "rating": float,
+            "count_review": int
+          },
+          "created_at": "string",
+          "modified_at": "string"
         }
       }
       ```
@@ -199,8 +203,8 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       {
         "status": int,
         "message": {
-            "en": "string",
-            "id": "string"
+          "en": "string",
+          "id": "string"
         }
       }
       ```
@@ -244,6 +248,56 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       ```
 
 ### Get Detail Company
+  - Description : Endpoint for detail company
+  - Method : `GET`
+  - Endpoint : `/companies/detail/:companyID`
+  - Parameter : -
+  - Request: -
+  - Response
+    - Success
+      ```
+      {
+        "status": int,
+        "message": {
+          "en": "string",
+          "id": "string"
+        },
+        "data": {
+          "email": "string",
+          "name": "string",
+          "description": "string",
+          "address": "string",
+          "website": "string",
+          "phone_number": "string",
+          "telp_number": "string",
+          "profil_picture_url": "string",
+          "dress": "string",
+          "size": "strings",
+          "benefit": [
+            {
+              "id": int,
+              "value": "string"
+            }
+          ],
+          "review": {
+            "rating": float,
+            "count_review": int
+          },
+          "created_at": "string",
+          "modified_at": "string"
+        }
+      }
+      ```
+    - Failed
+      ```
+      {
+        "status": int,
+        "message": {
+          "en": "string",
+          "id": "string"
+        }
+      }
+      ```
 
 ### Review Company
 
@@ -261,14 +315,14 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       {
         "status": int,
         "message": {
-            "en": "string",
-            "id": "string"
+          "en": "string",
+          "id": "string"
         },
         "data": [
-            {
-                "id": int,
-                "value": "string"
-            }
+          {
+            "id": int,
+            "value": "string"
+          }
         ]
       }
       ```
@@ -277,8 +331,8 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       {
         "status": int,
         "message": {
-            "en": "string",
-            "id": "string"
+          "en": "string",
+          "id": "string"
         }
       }
       ```
@@ -295,14 +349,14 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       {
         "status": int,
         "message": {
-            "en": "string",
-            "id": "string"
+          "en": "string",
+          "id": "string"
         },
         "data": [
-            {
-                "id": int,
-                "value": "string"
-            }
+          {
+            "id": int,
+            "value": "string"
+          }
         ]
       }
       ```
@@ -311,8 +365,8 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       {
         "status": int,
         "message": {
-            "en": "string",
-            "id": "string"
+          "en": "string",
+          "id": "string"
         }
       }
       ```
@@ -329,14 +383,14 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       {
         "status": int,
         "message": {
-            "en": "string",
-            "id": "string"
+          "en": "string",
+          "id": "string"
         },
         "data": [
-            {
-                "id": int,
-                "value": "string"
-            }
+          {
+            "id": int,
+            "value": "string"
+          }
         ]
       }
       ```
@@ -345,8 +399,8 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       {
         "status": int,
         "message": {
-            "en": "string",
-            "id": "string"
+          "en": "string",
+          "id": "string"
         }
       }
       ```

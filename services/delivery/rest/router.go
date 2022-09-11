@@ -30,6 +30,7 @@ func NewHandler(
 
 	// below use token for authentication
 	// companies router
+	router.GET("/companies/detail/:companyId", middleware.Authentication(h.GetDetailCompany))
 	router.GET("/companies/dress-codes", middleware.Authentication(h.GetListDresscode))
 	router.GET("/companies/benefit-codes", middleware.Authentication(h.GetListBenefitcode))
 	router.GET("/companies/size-codes", middleware.Authentication(h.GetListSizecode))
