@@ -19,7 +19,10 @@ type CompanyRepository interface {
 	CheckCompanyByEmail(ctx context.Context, email string) (result models.Company, err error)
 	CheckCompanyById(ctx context.Context, id string) (result models.Company, err error)
 	UpdateCompany(ctx context.Context, args models.Company) (err error)
-	GetListCompanies(ctx context.Context) (result []models.Companies, err error)
+	GetListCompanies(ctx context.Context, args models.ListData) (result []models.Companies, err error)
+	GetCountCompanies(ctx context.Context) (result int, err error)
 	GetDetailCompany(ctx context.Context, id string) (result models.Company, err error)
 	CreateReviewCompany(ctx context.Context, args models.ReviewCompany) (result models.ReviewCompany, err error)
+	GetReviewCompany(ctx context.Context, companyID string, args models.ListData) (result []models.ReviewCompany, err error)
+	GetCountReviewCompany(ctx context.Context, companyID string) (result int, err error)
 }

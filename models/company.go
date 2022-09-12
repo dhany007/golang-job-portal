@@ -59,7 +59,7 @@ type Companies struct {
 
 type ReviewCompany struct {
 	ID          int    `json:"id" db:"id"`
-	CompanyID   string `json:"company_id" db:"company_id"`
+	CompanyID   string `json:"company_id,omitempty" db:"company_id"`
 	CandidateID string `json:"candidate_id" db:"candidate_id"`
 	Rating      int    `json:"rating" db:"rating"`
 	Review      string `json:"review" db:"review"`
@@ -70,4 +70,27 @@ type ReviewCompanyArgument struct {
 	CandidateID string `json:"candidate_id" valid:"required"`
 	Rating      int    `json:"rating" valid:"required,numeric,range(1|5)"`
 	Review      string `json:"review" valid:"required"`
+}
+
+type ListData struct {
+	Offset      int `json:"offset,omitempty"`
+	Limit       int `json:"limit,omitempty"`
+	Page        int `json:"page,omitempty"`
+	ItemPerPage int `json:"item_per_page,omitempty"`
+}
+
+type ListReviewCompany struct {
+	Page        int             `json:"page"`
+	TotalPage   int             `json:"total_page"`
+	ItemPerPage int             `json:"item_per_page"`
+	TotalData   int             `json:"total_data"`
+	Reviews     []ReviewCompany `json:"reviews"`
+}
+
+type ListCompanies struct {
+	Page        int         `json:"page"`
+	TotalPage   int         `json:"total_page"`
+	ItemPerPage int         `json:"item_per_page"`
+	TotalData   int         `json:"total_data"`
+	Companies   []Companies `json:"companies"`
 }
