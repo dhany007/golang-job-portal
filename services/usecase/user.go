@@ -84,7 +84,7 @@ func (u userUsecase) Login(ctx context.Context, args models.UserLoginArgument) (
 	accessTokenExpiresIn, _ := strconv.Atoi(utils.GetEnv("AccessTokenExpiresIn", "20"))
 
 	// generate refresh token
-	refreshToken, err := utils.GenerateToken(time.Duration(refreshTokenExpiresIn), user.ID, user.Email)
+	refreshToken, err := utils.GenerateToken(time.Duration(refreshTokenExpiresIn), user.ID, user.Email, user.Role)
 	if err != nil {
 		err = response.NewErrork(response.ErrorServerError)
 		log.Printf("[user] [usecase] [Login] while ErrorServerError, email:%+v\n", args.Email)
@@ -92,7 +92,7 @@ func (u userUsecase) Login(ctx context.Context, args models.UserLoginArgument) (
 	}
 
 	// generate access token
-	accessToken, err := utils.GenerateToken(time.Duration(accessTokenExpiresIn), user.ID, user.Email)
+	accessToken, err := utils.GenerateToken(time.Duration(accessTokenExpiresIn), user.ID, user.Email, user.Role)
 	if err != nil {
 		err = response.NewErrork(response.ErrorServerError)
 		log.Printf("[user] [usecase] [Login] while ErrorServerError, email:%+v\n", args.Email)
@@ -138,7 +138,7 @@ func (u userUsecase) RefreshToken(ctx context.Context, token string) (result mod
 	accessTokenExpiresIn, _ := strconv.Atoi(utils.GetEnv("AccessTokenExpiresIn", "20"))
 
 	// generate access token
-	accessToken, err := utils.GenerateToken(time.Duration(accessTokenExpiresIn), user.ID, user.Email)
+	accessToken, err := utils.GenerateToken(time.Duration(accessTokenExpiresIn), user.ID, user.Email, user.Role)
 	if err != nil {
 		err = response.NewErrork(response.ErrorServerError)
 		log.Println("[user] [usecase] [RefreshToken] while ErrorServerError")

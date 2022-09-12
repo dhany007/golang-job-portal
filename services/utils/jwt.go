@@ -15,13 +15,14 @@ var (
 	key = GetEnv("KEY_JWT", "secretkey") // make default key "secretkey" if not provided
 )
 
-func GenerateToken(ttl time.Duration, id string, email string) (token string, err error) {
+func GenerateToken(ttl time.Duration, id string, email string, role int) (token string, err error) {
 	now := time.Now().Unix()
 	exp := time.Now().Add(ttl * time.Minute).Unix()
 
 	claims := jwt.MapClaims{
 		"id":    id,
 		"email": email,
+		"role":  role,
 		"iat":   now,
 		"exp":   exp,
 	}
@@ -76,6 +77,7 @@ func GetAuthorization(ctx context.Context) (result models.Authorization) {
 	result = models.Authorization{
 		ID:    auth["id"].(string),
 		Email: auth["email"].(string),
+		Role:  int(auth["role"].(float64)),
 	}
 
 	return

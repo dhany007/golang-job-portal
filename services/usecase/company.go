@@ -9,6 +9,7 @@ import (
 	"github.com/dhany007/golang-job-portal/models"
 	"github.com/dhany007/golang-job-portal/models/response"
 	"github.com/dhany007/golang-job-portal/services"
+	"github.com/dhany007/golang-job-portal/services/utils"
 )
 
 type companyUsecase struct {
@@ -166,6 +167,56 @@ func (c companyUsecase) GetDetailCompany(ctx context.Context, companyID string) 
 		err = response.NewErrork(response.ErrorNotFound)
 		log.Println("[company] [usecase] [GetDetailCompany] while ErrorNotFound")
 		return
+	}
+
+	return
+}
+
+func (c companyUsecase) CreateReviewCompany(ctx context.Context, args models.ReviewCompanyArgument) (result models.ReviewCompany, err error) {
+	var (
+		company models.Company
+		review  models.ReviewCompany
+	)
+
+	// check availability company
+	company, err = c.repo.CheckCompanyById(ctx, args.CompanyID)
+	if err != nil {
+		log.Println("[company] [usecase] [CreateReviewCompany] while CheckCompanyById")
+		return
+	}
+
+	if company.ID == "" {
+		err = response.NewErrork(response.ErrorNotFound)
+		log.Println("[company] [usecase] [CreateReviewCompany] while ErrorNotFound")
+		return
+	}
+
+	// only candidate can post review and check authorized
+	candidate := utils.GetAuthorization(ctx)
+	if candidate.Role != 2 {
+		err = response.NewErrork(response.ErrorOnlyCandidate)
+		log.Println("[company] [usecase] [CreateReviewCompany] while ErrorOnlyCandidate")
+		return
+	}
+	if candidate.ID != args.CandidateID {
+		err = response.NewErrork(response.ErrorUnauthorized)
+		log.Println("[company] [usecase] [CreateReviewCompany] while ErrorUnauthorized")
+		return
+	}
+
+	// reinitialize data
+	review = models.ReviewCompany{
+		CompanyID:   args.CompanyID,
+		CandidateID: args.CandidateID,
+		Rating:      args.Rating,
+		Review:      args.Review,
+	}
+
+	// repository post review company
+	result, err = c.repo.CreateReviewCompany(ctx, review)
+	if err != nil {
+		log.Printf("[company] [usecase] [CreateReviewCompany] while ErrorServerError, args:%+v\n", args)
+		return result, err
 	}
 
 	return

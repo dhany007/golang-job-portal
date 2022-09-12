@@ -149,11 +149,11 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
     ```
     {
       "email": string,
-      "name": string,
-      "description": string,
-      "address": string,
+      "name": string,required,
+      "description": string,required,
+      "address": string,required,
       "website": string,
-      "phone_number": string,
+      "phone_number": string,required,
       "telp_number": string,
       "profil_picture_url": string,
       "dress": int,
@@ -300,6 +300,47 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       ```
 
 ### Review Company
+  - Description : Endpoint candidate to give review company
+  - Method : `POST`
+  - Endpoint : `/companies/reviews`
+  - Parameter : -
+  - Request:
+    ```
+    {
+      "company_id": "string,required",
+      "candidate_id": "string,required",
+      "rating": int,numeric,range(1|3),
+      "review":"string,required"
+    }
+    ```
+  - Response
+    - Success
+      ```
+      {
+        "status": int,
+        "message": {
+          "en": "string",
+          "id": "string"
+        },
+        "data": {
+          "id": int,
+          "company_id": "string",
+          "candidate_id": "string",
+          "rating": int,
+          "review": "string"
+        }
+      }
+      ```
+    - Failed
+      ```
+      {
+        "status": int,
+        "message": {
+          "en": "string",
+          "id": "string"
+        }
+      }
+      ```
 
 ### Get List Review Company
 
