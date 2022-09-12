@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/dhany007/golang-job-portal/models"
 	"github.com/dhany007/golang-job-portal/models/response"
 	"github.com/dhany007/golang-job-portal/services/utils"
@@ -91,19 +92,27 @@ func (h handler) UpdateCompany(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	// check if current user as company is same with company id
-	userID := utils.GetAuthorization(r.Context()).ID
-	if userID != companyId {
-		log.Println("[company] [delivery] [UpdateCompany] while ErrorUnauthorized")
-		response.Result(w, response.ErrorUnauthorized)
-		return
-	}
-
 	// binding body json
 	err = json.NewDecoder(r.Body).Decode(&args)
 	if err != nil {
 		log.Printf("[company] [delivery] [UpdateCompany] while body binding, err:%+v\n", err)
 		response.ResultError(w, response.ErrorBadRequest, err)
+		return
+	}
+
+	// validate args
+	_, err = govalidator.ValidateStruct(args)
+	if err != nil {
+		log.Printf("[company] [delivery] [UpdateCompany] while ValidateStruct, err:%+v\n", err)
+		response.ResultError(w, response.ErrorValidation, err)
+		return
+	}
+
+	// check if current user as company is same with company id
+	userID := utils.GetAuthorization(r.Context()).ID
+	if userID != companyId {
+		log.Println("[company] [delivery] [UpdateCompany] while ErrorUnauthorized")
+		response.Result(w, response.ErrorUnauthorized)
 		return
 	}
 
@@ -161,6 +170,42 @@ func (h handler) GetDetailCompany(w http.ResponseWriter, r *http.Request, ps htt
 	if err != nil {
 		errCode, _ := strconv.Atoi(err.Error())
 		log.Println("[company] [delivery] [DetailCompany] while companyUsecase.GetDetailCompany")
+		response.Result(w, errCode)
+		return
+	}
+
+	// return data
+	response.ResultWithData(w, response.SuccesOk, result)
+}
+
+func (h handler) PostReviewCompany(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	var (
+		result models.ReviewCompany
+		args   models.ReviewCompanyArgument
+		err    error
+	)
+
+	// binding body json
+	err = json.NewDecoder(r.Body).Decode(&args)
+	if err != nil {
+		log.Printf("[company] [delivery] [PostReviewCompany] while body binding, err:%+v\n", err)
+		response.ResultError(w, response.ErrorBadRequest, err)
+		return
+	}
+
+	// validate args
+	_, err = govalidator.ValidateStruct(args)
+	if err != nil {
+		log.Printf("[company] [delivery] [PostReviewCompany] while ValidateStruct, err:%+v\n", err)
+		response.ResultError(w, response.ErrorValidation, err)
+		return
+	}
+
+	// usecase detail company
+	result, err = h.companyUsecase.CreateReviewCompany(r.Context(), args)
+	if err != nil {
+		errCode, _ := strconv.Atoi(err.Error())
+		log.Println("[company] [delivery] [PostReviewCompany] while companyUsecase.CreateReviewCompany")
 		response.Result(w, errCode)
 		return
 	}

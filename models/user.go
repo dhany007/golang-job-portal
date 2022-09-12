@@ -31,4 +31,5 @@ type UserLoginResponse struct {
 type Authorization struct {
 	ID    string
 	Email string
+	Role  int
 }

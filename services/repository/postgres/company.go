@@ -3,8 +3,10 @@ package postgres
 import (
 	"context"
 	"log"
+	"strings"
 
 	"github.com/dhany007/golang-job-portal/models"
+	"github.com/dhany007/golang-job-portal/models/response"
 	"github.com/dhany007/golang-job-portal/services"
 	"github.com/dhany007/golang-job-portal/services/repository/database"
 	"github.com/dhany007/golang-job-portal/services/repository/postgres/queries"
@@ -280,6 +282,57 @@ func (c companyRepository) GetDetailCompany(ctx context.Context, companyId strin
 		}
 	}
 	result.Review = reviews
+
+	return
+}
+
+func (c companyRepository) CreateReviewCompany(ctx context.Context, args models.ReviewCompany) (result models.ReviewCompany, err error) {
+	var (
+		row *sqlx.Rows
+	)
+
+	// insert review
+	_, err = c.DB.ExecContext(
+		ctx,
+		queries.QueryInsertReviewCompany,
+		args.CompanyID,
+		args.CandidateID,
+		args.Rating,
+		args.Review,
+	)
+
+	if err != nil && strings.Contains(err.Error(), "uq_candidate_company") {
+		err = response.NewErrork(response.ErrorReviewFound)
+		log.Printf("[company] [repository] [CreateReviewCompany] while uq_candidate_company, err:%+v\n", err)
+		return
+	}
+
+	if err != nil {
+		log.Printf("[company] [repository] [CreateReviewCompany] while QueryInsertReviewCompany, err:%+v\n", err)
+		return
+	}
+
+	// get detail company review
+	row, err = c.DB.QueryxContext(
+		ctx,
+		queries.QueryGetReviewCompanyID,
+		args.CompanyID,
+		args.CandidateID,
+	)
+	if err != nil {
+		log.Printf("[company] [repository] [CreateReviewCompany] while queries.QueryGetReviewCompanyID, err:%+v\n", err)
+		return
+	}
+
+	defer row.Close()
+
+	for row.Next() {
+		err = row.StructScan(&result)
+		if err != nil {
+			log.Printf("[company] [repository] [CreateReviewCompany] while StructScan, err:%+v\n", err)
+			return
+		}
+	}
 
 	return
 }

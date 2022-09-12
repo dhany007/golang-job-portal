@@ -21,4 +21,5 @@ type CompanyRepository interface {
 	UpdateCompany(ctx context.Context, args models.Company) (err error)
 	GetListCompanies(ctx context.Context) (result []models.Companies, err error)
 	GetDetailCompany(ctx context.Context, id string) (result models.Company, err error)
+	CreateReviewCompany(ctx context.Context, args models.ReviewCompany) (result models.ReviewCompany, err error)
 }

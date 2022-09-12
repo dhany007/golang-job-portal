@@ -56,3 +56,18 @@ type Companies struct {
 	Rating      float64 `json:"rating" db:"rating"`
 	CountReview int     `json:"count_review" db:"count_review"`
 }
+
+type ReviewCompany struct {
+	ID          int    `json:"id" db:"id"`
+	CompanyID   string `json:"company_id" db:"company_id"`
+	CandidateID string `json:"candidate_id" db:"candidate_id"`
+	Rating      int    `json:"rating" db:"rating"`
+	Review      string `json:"review" db:"review"`
+}
+
+type ReviewCompanyArgument struct {
+	CompanyID   string `json:"company_id,omitempty" valid:"required"`
+	CandidateID string `json:"candidate_id" valid:"required"`
+	Rating      int    `json:"rating" valid:"required,numeric,range(1|5)"`
+	Review      string `json:"review" valid:"required"`
+}
