@@ -134,13 +134,22 @@ func (h handler) UpdateCompany(w http.ResponseWriter, r *http.Request, ps httpro
 func (h handler) GetListCompanies(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	var (
 		ctx    context.Context
-		result []models.Companies
+		result models.ListCompanies
+		args   models.ListData
 		err    error
 	)
 
-	// usecase getbenefitscode
+	// define args
+	page := utils.Utint(r.URL.Query().Get("page"), 1)                  // default 1
+	itemPerPage := utils.Utint(r.URL.Query().Get("item_per_page"), 10) // default 10
+
+	args.ItemPerPage = itemPerPage
+	args.Page = page
+	args.Limit = itemPerPage
+
+	// usecase list companies
 	ctx = r.Context()
-	result, err = h.companyUsecase.GetListCompanies(ctx)
+	result, err = h.companyUsecase.GetListCompanies(ctx, args)
 	if err != nil {
 		errCode, _ := strconv.Atoi(err.Error())
 		log.Println("[company] [delivery] [GetListCompanies] while companyUsecase.GetListCompanies")
@@ -206,6 +215,41 @@ func (h handler) PostReviewCompany(w http.ResponseWriter, r *http.Request, ps ht
 	if err != nil {
 		errCode, _ := strconv.Atoi(err.Error())
 		log.Println("[company] [delivery] [PostReviewCompany] while companyUsecase.CreateReviewCompany")
+		response.Result(w, errCode)
+		return
+	}
+
+	// return data
+	response.ResultWithData(w, response.SuccesOk, result)
+}
+
+func (h handler) GetReviewCompany(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	var (
+		result models.ListReviewCompany
+		args   models.ListData
+		err    error
+	)
+	// check param id
+	companyId := ps.ByName("companyId")
+	if err != nil {
+		log.Printf("[company] [delivery] [GetReviewCompany] while get paramater id, err:%+v\n", err)
+		response.ResultError(w, response.ErrorInvalidParameter, err)
+		return
+	}
+
+	// define args
+	page := utils.Utint(r.URL.Query().Get("page"), 1)                  // default 1
+	itemPerPage := utils.Utint(r.URL.Query().Get("item_per_page"), 10) // default 10
+
+	args.ItemPerPage = itemPerPage
+	args.Page = page
+	args.Limit = itemPerPage
+
+	// usecase list review company
+	result, err = h.companyUsecase.GetReviewCompany(r.Context(), companyId, args)
+	if err != nil {
+		errCode, _ := strconv.Atoi(err.Error())
+		log.Println("[company] [delivery] [GetReviewCompany] while companyUsecase.GetReviewCompany")
 		response.Result(w, errCode)
 		return
 	}

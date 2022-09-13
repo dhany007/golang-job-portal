@@ -193,13 +193,13 @@ func (c companyRepository) UpdateCompany(ctx context.Context, args models.Compan
 	return
 }
 
-func (c companyRepository) GetListCompanies(ctx context.Context) (result []models.Companies, err error) {
+func (c companyRepository) GetListCompanies(ctx context.Context, args models.ListData) (result []models.Companies, err error) {
 	var (
 		row     *sqlx.Rows
 		company models.Companies
 	)
 
-	row, err = c.DB.QueryxContext(ctx, queries.QueryListCompanies)
+	row, err = c.DB.QueryxContext(ctx, queries.QueryListCompanies, args.Limit, args.Offset)
 	if err != nil {
 		log.Printf("[company] [repository] [GetListCompanies] while QueryListCompanies, err:%+v\n", err)
 		return
@@ -330,6 +330,81 @@ func (c companyRepository) CreateReviewCompany(ctx context.Context, args models.
 		err = row.StructScan(&result)
 		if err != nil {
 			log.Printf("[company] [repository] [CreateReviewCompany] while StructScan, err:%+v\n", err)
+			return
+		}
+	}
+
+	return
+}
+
+func (c companyRepository) GetReviewCompany(ctx context.Context, companyID string, args models.ListData) (result []models.ReviewCompany, err error) {
+	var (
+		row    *sqlx.Rows
+		review models.ReviewCompany
+	)
+
+	row, err = c.DB.QueryxContext(
+		ctx,
+		queries.QueryGetReviewCompany,
+		companyID,
+		args.Limit,
+		args.Offset,
+	)
+
+	if err != nil {
+		log.Printf("[company] [repository] [GetReviewCompany] while QueryGetReviewCompany, err:%+v\n", err)
+		return
+	}
+
+	defer row.Close()
+
+	for row.Next() {
+		err = row.StructScan(&review)
+		if err != nil {
+			log.Printf("[company] [repository] [GetReviewCompany] while StructScan, err:%+v\n", err)
+			return
+		}
+		review.CompanyID = ""
+
+		result = append(result, review)
+	}
+
+	return
+}
+
+func (c companyRepository) GetCountReviewCompany(ctx context.Context, companyID string) (total int, err error) {
+	row, err := c.DB.QueryxContext(ctx, queries.QueryGetCountReviewCompany, companyID)
+	if err != nil {
+		log.Printf("[company] [repository] [GetCountReviewCompany] while QueryGetCountReviewCompany, err:%+v\n", err)
+		return
+	}
+
+	defer row.Close()
+
+	for row.Next() {
+		err = row.Scan(&total)
+		if err != nil {
+			log.Printf("[company] [repository] [GetCountReviewCompany] while StructScan, err:%+v\n", err)
+			return
+		}
+	}
+
+	return
+}
+
+func (c companyRepository) GetCountCompanies(ctx context.Context) (total int, err error) {
+	row, err := c.DB.QueryxContext(ctx, queries.QueryGetCountCompanies)
+	if err != nil {
+		log.Printf("[company] [repository] [GetCountCompanies] while QueryGetCountCompanies, err:%+v\n", err)
+		return
+	}
+
+	defer row.Close()
+
+	for row.Next() {
+		err = row.Scan(&total)
+		if err != nil {
+			log.Printf("[company] [repository] [GetCountCompanies] while StructScan, err:%+v\n", err)
 			return
 		}
 	}

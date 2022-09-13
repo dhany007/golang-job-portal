@@ -212,10 +212,12 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
 ### Update Profil Candidate
 
 ### Get List Company
-  - Description : Endpoint for get list companies.
+  - Description : Endpoint for get list companies sort by rating ascending.
   - Method : `GET`
   - Endpoint : `/companies`
-  - Parameter : -
+  - Parameter :
+    - `page`: optional, default 1
+    - `item_per_page`: optional, default 10
   - Request: -
   - Response
     - Success
@@ -226,14 +228,20 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
           "en": "string",
           "id": "string"
         },
-        "data": [
-          {
-            "id": "string",
-            "name": "string",
-            "rating": float,
-            "count_review": int
-          },
-        ]
+        "data": {
+          "page": int,
+          "total_page": int,
+          "item_per_page": int,
+          "total_data": int,
+          "companies": [
+            {
+              "id": "string",
+              "name": "string",
+              "rating": int,
+              "count_review": int
+            }
+          ]
+        }
       }
       ```
     - Failed
@@ -343,6 +351,49 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       ```
 
 ### Get List Review Company
+  - Description : Endpoint for get list revies company based on id and sorting by new added.
+  - Method : `GET`
+  - Endpoint : `/companies/reviews/{companyID}`
+  - Parameter :
+    - `page`: optional, default 1
+    - `item_per_page`: optional, default 10
+  - Request: -
+  - Response
+    - Success
+      ```
+      {
+        "status": int,
+        "message": {
+          "en": "string",
+          "id": "string"
+        },
+        "data": {
+          "page": int,
+          "total_page": int,
+          "item_per_page": int,
+          "total_data": int,
+          "reviews": [
+            {
+              "id": int,
+              "candidate_id": "string",
+              "rating": int,
+              "review": "string"
+            }
+          ]
+        }
+      }
+      ```
+    - Failed
+      ```
+      {
+        "status": int,
+        "message": {
+          "en": "string",
+          "id": "string"
+        }
+      }
+      ```
+
 
 ### Get List Dresscode Company
   - Description : Endpoint for get list code dresscode company.

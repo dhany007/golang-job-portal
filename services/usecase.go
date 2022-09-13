@@ -17,7 +17,8 @@ type CompanyUsecase interface {
 	GetListBenefitcode(ctx context.Context) (result []models.CompanySubCode, err error)
 	GetListSizecode(ctx context.Context) (result []models.CompanySubCode, err error)
 	UpdateCompany(ctx context.Context, args models.CompanyArgument) (result models.Company, err error)
-	GetListCompanies(ctx context.Context) (result []models.Companies, err error)
+	GetListCompanies(ctx context.Context, args models.ListData) (result models.ListCompanies, err error)
 	GetDetailCompany(ctx context.Context, companyID string) (result models.Company, err error)
 	CreateReviewCompany(ctx context.Context, args models.ReviewCompanyArgument) (result models.ReviewCompany, err error)
+	GetReviewCompany(ctx context.Context, companyID string, args models.ListData) (result models.ListReviewCompany, err error)
 }

@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"log"
+	"math"
 	"strconv"
 	"time"
 
@@ -135,20 +136,39 @@ func (c companyUsecase) UpdateCompany(ctx context.Context, args models.CompanyAr
 	return
 }
 
-func (c companyUsecase) GetListCompanies(ctx context.Context) (result []models.Companies, err error) {
-	// get companies
-	result, err = c.repo.GetListCompanies(ctx)
+func (c companyUsecase) GetListCompanies(ctx context.Context, args models.ListData) (result models.ListCompanies, err error) {
+	var (
+		companies []models.Companies
+	)
+
+	// get list companies
+	companies, err = c.repo.GetListCompanies(ctx, args)
 	if err != nil {
 		log.Printf("[company] [usecase] [GetListCompanies] while repo.GetListCompanies, err:%+v\n", err)
 		return
 	}
 
 	// check if data not found
-	if result == nil {
+	if companies == nil {
 		err = response.NewErrork(response.ErrorNotFound)
 		log.Println("[company] [usecase] [GetListCompanies] while ErrorNotFound")
 		return
 	}
+
+	// get total data
+	totalData, err := c.repo.GetCountCompanies(ctx)
+	if err != nil {
+		log.Printf("[company] [usecase] [GetListCompanies] while repo.GetCountCompanies, err:%+v\n", err)
+		return
+	}
+
+	totalPage := math.Ceil(float64(totalData) / float64(args.Limit))
+
+	result.Page = args.Page
+	result.TotalData = totalData
+	result.ItemPerPage = args.Limit
+	result.TotalPage = int(totalPage)
+	result.Companies = companies
 
 	return
 }
@@ -218,6 +238,46 @@ func (c companyUsecase) CreateReviewCompany(ctx context.Context, args models.Rev
 		log.Printf("[company] [usecase] [CreateReviewCompany] while ErrorServerError, args:%+v\n", args)
 		return result, err
 	}
+
+	return
+}
+
+func (c companyUsecase) GetReviewCompany(ctx context.Context, companyID string, args models.ListData) (result models.ListReviewCompany, err error) {
+	var (
+		reviews []models.ReviewCompany
+	)
+
+	args.Offset = (args.Page - 1) * args.Limit
+
+	// get list review
+	reviews, err = c.repo.GetReviewCompany(ctx, companyID, args)
+	if err != nil {
+		err = response.NewErrork(response.ErrorServerError)
+		log.Printf("[company] [usecase] [GetReviewCompany] while ErrorServerError, companyID:%+v\n", companyID)
+		return result, err
+	}
+
+	// check if data not found
+	if reviews == nil {
+		err = response.NewErrork(response.ErrorNotFound)
+		log.Println("[company] [usecase] [GetReviewCompany] while ErrorNotFound")
+		return
+	}
+
+	// check total data
+	totalData, err := c.repo.GetCountReviewCompany(ctx, companyID)
+	if err != nil {
+		log.Printf("[company] [usecase] [GetReviewCompany] while GetCountReviewCompany, companyID:%+v\n", companyID)
+		return result, err
+	}
+
+	totalPage := math.Ceil(float64(totalData) / float64(args.Limit))
+
+	result.Page = args.Page
+	result.TotalData = totalData
+	result.ItemPerPage = args.Limit
+	result.TotalPage = int(totalPage)
+	result.Reviews = reviews
 
 	return
 }
