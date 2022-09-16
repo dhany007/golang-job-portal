@@ -26,3 +26,10 @@ type CompanyRepository interface {
 	GetReviewCompany(ctx context.Context, companyID string, args models.ListData) (result []models.ReviewCompany, err error)
 	GetCountReviewCompany(ctx context.Context, companyID string) (result int, err error)
 }
+
+type CandidateRepository interface {
+	UpdateCandidate(ctx context.Context, args models.Candidate) (err error)
+	CheckCandidateByEmail(ctx context.Context, email string) (result models.Candidate, err error)
+	CheckCandidateById(ctx context.Context, id string) (result models.Candidate, err error)
+	GetDetailCandidate(ctx context.Context, id string) (result models.Candidate, err error)
+}

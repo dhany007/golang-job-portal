@@ -13,9 +13,11 @@ Make API for Job Portal. All development use `git flow`.
 ![img-architecture](architecture-golang.png)
 source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
 
+
 ## Scopes
 | Ticket ID | Ticket Title | User Story |
 |---|---|---|
+| PHASE I |
 | [JP-01](readme.md#user-register) | User register | As a User, i can register as company or candidate |
 | [JP-02](readme.md#user-login) | User login, refresh access token and logout | As a User, i can login as company or candidate, refresh access token and logout |
 | [JP-03](readme.md#update-profil-company) | Update profil company | As a company, i can update my profil |
@@ -25,6 +27,7 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
 | [JP-07](readme.md#review-company) | Review company | As a candidate, i can review company with rating |
 | [JP-08](readme.md#get-list-review-company) | Get list review company | As a candidate, i can get list of all reviews of company |
 | [JP-09](readme.md#get-list-dresscode-company) | Get list company dresscode, benefits, and size | As a company, i can get list code dresscode, benefits and size |
+| JP-10 | Test case | Create test case for all API phase 1 |
 
 ## Api Specs
 
@@ -210,6 +213,55 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
       ```
 
 ### Update Profil Candidate
+  - Description : Endpoint for update candidate, check if candidate is same with id user login
+  - Method : `POST`
+  - Endpoint : `/candidates/:companyID`
+  - Parameter :
+  - Request: -
+    ```
+    {
+      "email":"string",
+      "first_name": "string",
+      "last_name": "string",
+      "phone_number": "string,required",
+      "telp_number": "string",
+      "address": "string,required",
+      "profil_picture_url": "string"
+    }
+    ```
+  - Response
+    - Success
+      ```
+      {
+        "status": int,
+        "message": {
+          "en": "string",
+          "id": "string"
+        },
+        "data": {
+          "id": "string",
+          "email": "string",
+          "first_name": "string",
+          "last_name": "string",
+          "phone_number": "string",
+          "telp_number": "string",
+          "address": "string",
+          "profil_picture_url": "string",
+          "created_at": "string,time,utc",
+          "modified_at": "string,time,utc"
+        }
+      }
+      ```
+    - Failed
+      ```
+      {
+        "status": int,
+        "message": {
+          "en": "string",
+          "id": "string"
+        }
+      }
+      ```
 
 ### Get List Company
   - Description : Endpoint for get list companies sort by rating ascending.

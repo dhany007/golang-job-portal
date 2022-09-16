@@ -86,9 +86,9 @@ func (h handler) UpdateCompany(w http.ResponseWriter, r *http.Request, ps httpro
 	)
 	// check param id
 	companyId := ps.ByName("companyId")
-	if err != nil {
-		log.Printf("[company] [delivery] [UpdateCompany] while get paramater id, err:%+v\n", err)
-		response.ResultError(w, response.ErrorInvalidParameter, err)
+	if companyId == "" {
+		log.Println("[company] [delivery] [UpdateCompany] while get paramater id")
+		response.Result(w, response.ErrorInvalidParameter)
 		return
 	}
 
@@ -168,9 +168,9 @@ func (h handler) GetDetailCompany(w http.ResponseWriter, r *http.Request, ps htt
 	)
 	// check param id
 	companyId := ps.ByName("companyId")
-	if err != nil {
-		log.Printf("[company] [delivery] [DetailCompany] while get paramater id, err:%+v\n", err)
-		response.ResultError(w, response.ErrorInvalidParameter, err)
+	if companyId == "" {
+		log.Println("[company] [delivery] [DetailCompany] while get paramater id")
+		response.Result(w, response.ErrorInvalidParameter)
 		return
 	}
 
@@ -231,8 +231,8 @@ func (h handler) GetReviewCompany(w http.ResponseWriter, r *http.Request, ps htt
 	)
 	// check param id
 	companyId := ps.ByName("companyId")
-	if err != nil {
-		log.Printf("[company] [delivery] [GetReviewCompany] while get paramater id, err:%+v\n", err)
+	if companyId == "" {
+		log.Println("[company] [delivery] [GetReviewCompany] while get paramater id")
 		response.ResultError(w, response.ErrorInvalidParameter, err)
 		return
 	}

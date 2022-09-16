@@ -7,19 +7,22 @@ import (
 )
 
 type handler struct {
-	userUsecase    services.UserUsecase
-	companyUsecase services.CompanyUsecase
+	userUsecase      services.UserUsecase
+	companyUsecase   services.CompanyUsecase
+	candidateUsecase services.CandidateUsecase
 }
 
 func NewHandler(
 	userUsecase services.UserUsecase,
 	companyUsecase services.CompanyUsecase,
+	candidateUsecase services.CandidateUsecase,
 ) (router *httprouter.Router) {
 	router = httprouter.New()
 
 	h := handler{
 		userUsecase,
 		companyUsecase,
+		candidateUsecase,
 	}
 
 	// users router
@@ -38,6 +41,9 @@ func NewHandler(
 	router.GET("/companies", middleware.Authentication(h.GetListCompanies))
 	router.POST("/companies/reviews", middleware.Authentication(h.PostReviewCompany))
 	router.PUT("/companies/:companyId", middleware.Authentication(h.UpdateCompany))
+
+	// candidates router
+	router.PUT("/candidates/:candidateId", middleware.Authentication(h.UpdateCandidate))
 
 	return
 }

@@ -131,9 +131,9 @@ func (c companyRepository) CheckCompanyById(ctx context.Context, id string) (res
 		row *sqlx.Rows
 	)
 
-	row, err = c.DB.QueryxContext(ctx, queries.QueryCheckCompanyById, id)
+	row, err = c.DB.QueryxContext(ctx, queries.QueryCheckUsersById, id)
 	if err != nil {
-		log.Printf("[company] [repository] [CheckCompanyById] while queries.QueryCheckCompanyById, err:%+v\n", err)
+		log.Printf("[company] [repository] [CheckCompanyById] while queries.QueryCheckUsersById, err:%+v\n", err)
 		return
 	}
 
@@ -151,7 +151,7 @@ func (c companyRepository) CheckCompanyById(ctx context.Context, id string) (res
 }
 
 func (c companyRepository) UpdateCompany(ctx context.Context, args models.Company) (err error) {
-	// update benefit
+	// update company
 	_, err = c.DB.ExecContext(
 		ctx,
 		queries.QueryUpdateCompany,
@@ -171,6 +171,19 @@ func (c companyRepository) UpdateCompany(ctx context.Context, args models.Compan
 
 	if err != nil {
 		log.Printf("[company] [repository] [UpdateCompany] while QueryUpdateCompany, err:%+v\n", err)
+		return
+	}
+
+	// update user
+	_, err = c.DB.ExecContext(
+		ctx,
+		queries.QueryUpdateEmailUser,
+		args.Email,
+		args.ID,
+	)
+
+	if err != nil {
+		log.Printf("[company] [repository] [UpdateCompany] while QueryUpdateEmailUser, err:%+v\n", err)
 		return
 	}
 
