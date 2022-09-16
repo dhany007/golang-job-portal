@@ -22,3 +22,7 @@ type CompanyUsecase interface {
 	CreateReviewCompany(ctx context.Context, args models.ReviewCompanyArgument) (result models.ReviewCompany, err error)
 	GetReviewCompany(ctx context.Context, companyID string, args models.ListData) (result models.ListReviewCompany, err error)
 }
+
+type CandidateUsecase interface {
+	UpdateCandidate(ctx context.Context, args models.CandidateArgument) (result models.Candidate, err error)
+}

@@ -48,22 +48,6 @@ const (
 			company_size_codes
 	`
 
-	QueryCheckCompanyById = `
-		SELECT id, email
-		FROM
-			users
-		WHERE
-			id = $1
-	`
-
-	QueryCheckAvailableEmail = `
-		SELECT id, email
-		FROM
-			users
-		WHERE
-			email = $1
-	`
-
 	QueryUpdateCompany = `
 		UPDATE companies
 		SET
