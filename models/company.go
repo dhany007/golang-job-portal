@@ -32,7 +32,6 @@ type Company struct {
 
 type CompanyArgument struct {
 	ID               string           `json:"id,omitempty" db:"id"`
-	Email            string           `json:"email"`
 	Name             string           `json:"name" valid:"required"`
 	Description      string           `json:"description" valid:"required"`
 	Address          string           `json:"address" valid:"required"`

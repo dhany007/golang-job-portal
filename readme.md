@@ -151,7 +151,6 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
   - Request: -
     ```
     {
-      "email": string,
       "name": string,required,
       "description": string,required,
       "address": string,required,

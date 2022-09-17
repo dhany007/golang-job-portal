@@ -13,11 +13,25 @@ import (
 
 type Server interface {
 	Request(method string, url string, body io.Reader) *http.Response
+	RequestWithAuthentication(method string, url string, body io.Reader, token string) *http.Response
 	Handler() http.Handler
 }
 
 type ServerImpl struct {
 	DB *database.DB
+}
+
+// RequestWithAuthentication implements Server
+func (s ServerImpl) RequestWithAuthentication(method string, url string, body io.Reader, token string) *http.Response {
+	request := httptest.NewRequest(method, url, body)
+
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Authorization", "Bearer "+token)
+	recorder := httptest.NewRecorder()
+	s.Handler().ServeHTTP(recorder, request)
+	response := recorder.Result()
+
+	return response
 }
 
 func NewServer(DB *database.DB) Server {

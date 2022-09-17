@@ -19,7 +19,8 @@ func NewCandidateUsecase(repo services.CandidateRepository) services.CandidateUs
 
 func (c candidateUsecase) UpdateCandidate(ctx context.Context, args models.CandidateArgument) (result models.Candidate, err error) {
 	var (
-		candidate models.Candidate
+		candidate  models.Candidate
+		candidates []models.Candidate
 	)
 
 	// check candidate by id given
@@ -30,8 +31,8 @@ func (c candidateUsecase) UpdateCandidate(ctx context.Context, args models.Candi
 	}
 
 	// check email availability
-	candidate, err = c.repo.CheckCandidateByEmail(ctx, args.Email)
-	if err != nil {
+	candidates, err = c.repo.CheckCandidateByEmail(ctx, args.Email)
+	if len(candidates) > 1 {
 		err = response.NewErrork(response.ErrorRegisEmail)
 		log.Printf("[company] [usecase] [UpdateCompany] while CheckCandidateByEmail, args: %+v\n", args)
 		return
