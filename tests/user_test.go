@@ -1,161 +1,157 @@
 package tests
 
 import (
+	"encoding/json"
 	"net/http"
 	"strings"
 	"testing"
+
+	"github.com/dhany007/golang-job-portal/models"
 )
 
 var (
 	prefixUsers = "http://localhost:11010/users"
-	// urlRegister = prefixUsers + "/register"
-	urlLogin  = prefixUsers + "/login"
-	urlLogout = prefixUsers + "/logout"
+	urlRegister = prefixUsers + "/register"
+	urlLogin    = prefixUsers + "/login"
+	urlLogout   = prefixUsers + "/logout"
 )
 
-// func TestRegisterUser(t *testing.T) {
-// 	db, err := InitPostgresTest()
-// 	AssertNoError(t, err)
+func TestRegisterUser(t *testing.T) {
+	db, err := InitPostgresTest()
+	AssertNoError(t, err)
 
-// 	server := NewServer(db)
+	server := NewServer(db)
 
-// 	db.Exec("TRUNCATE users;")
-// 	db.Exec("TRUNCATE companies;")
-// 	db.Exec("TRUNCATE candidates;")
+	db.Exec("TRUNCATE users;")
+	db.Exec("TRUNCATE companies;")
+	db.Exec("TRUNCATE candidates;")
 
-// 	testCases := []struct {
-// 		desc string
-// 		body string
-// 		code int
-// 	}{
-// 		{
-// 			desc: "failed register, email not valid",
-// 			body: `
-// 			{
-// 				"email": "manunggal",
-// 				"password": "admin123",
-// 				"role": 1
-// 			}
-// 		`,
-// 			code: 400,
-// 		},
-// 		{
-// 			desc: "failed register, email required",
-// 			body: `
-// 			{
-// 				"password": "admin123",
-// 				"role": 1
-// 			}
-// 		`,
-// 			code: 400,
-// 		},
-// 		{
-// 			desc: "failed register, password required",
-// 			body: `
-// 			{
-// 				"email": "manunggal@gmail.com",
-// 				"role": 1
-// 			}
-// 		`,
-// 			code: 400,
-// 		},
-// 		{
-// 			desc: "failed register, length password range(8|32)",
-// 			body: `
-// 			{
-// 				"email": "manunggal@gmail.com",
-// 				"password": "admin",
-// 				"role": 1
-// 			}
-// 		`,
-// 			code: 400,
-// 		},
-// 		{
-// 			desc: "failed register, length password range(8|32)",
-// 			body: `
-// 			{
-// 				"email": "manunggal@gmail.com",
-// 				"password": "adminadminadminadminadminadminadmin",
-// 				"role": 1
-// 			}
-// 		`,
-// 			code: 400,
-// 		},
-// 		{
-// 			desc: "success register as company",
-// 			body: `
-// 			{
-// 				"email": "company1@gmail.com",
-// 				"password": "admin123",
-// 				"role": 1
-// 			}
-// 		`,
-// 			code: 200,
-// 		},
-// 		{
-// 			desc: "success register as company",
-// 			body: `
-// 			{
-// 				"email": "company2@gmail.com",
-// 				"password": "admin123",
-// 				"role": 1
-// 			}
-// 		`,
-// 			code: 200,
-// 		},
-// 		{
-// 			desc: "failed register, email exists",
-// 			body: `
-// 			{
-// 				"email": "company2@gmail.com",
-// 				"password": "admin123",
-// 				"role": 1
-// 			}
-// 		`,
-// 			code: 400,
-// 		},
-// 		{
-// 			desc: "success register as candidate",
-// 			body: `
-// 			{
-// 				"email": "candidate1@gmail.com",
-// 				"password": "admin123",
-// 				"role": 2
-// 			}
-// 		`,
-// 			code: 200,
-// 		},
-// 		{
-// 			desc: "success register as candidate",
-// 			body: `
-// 			{
-// 				"email": "candidate2@gmail.com",
-// 				"password": "admin123",
-// 				"role": 2
-// 			}
-// 		`,
-// 			code: 200,
-// 		},
-// 		{
-// 			desc: "failed register, email exists",
-// 			body: `
-// 			{
-// 				"email": "candidate2@gmail.com",
-// 				"password": "admin123",
-// 				"role": 2
-// 			}
-// 		`,
-// 			code: 400,
-// 		},
-// 	}
+	type testCase struct {
+		desc string
+		body models.UserRegisterArguments
+		code int
+	}
 
-// 	for _, tC := range testCases {
-// 		t.Run(tC.desc, func(t *testing.T) {
-// 			response := server.Request(http.MethodPost, urlRegister, strings.NewReader(tC.body))
-// 			AssertEqualCode(t, response.StatusCode, tC.code)
-// 		})
-// 	}
-// }
+	var testCases []testCase
+
+	testCases = append(testCases, testCase{
+		desc: "failed register, email not valid",
+		body: models.UserRegisterArguments{
+			Email:    "manunggal",
+			Password: "admin123",
+			Role:     1,
+		},
+		code: 400,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "failed register, email required",
+		body: models.UserRegisterArguments{
+			Password: "admin123",
+			Role:     1,
+		},
+		code: 400,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "failed register, password required",
+		body: models.UserRegisterArguments{
+			Email: "manunggal",
+			Role:  1,
+		},
+		code: 400,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "failed register, length password range(8|32)",
+		body: models.UserRegisterArguments{
+			Email:    "manunggal@gmail.com",
+			Password: "admin",
+			Role:     1,
+		},
+		code: 400,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "failed register, length password range(8|32)",
+		body: models.UserRegisterArguments{
+			Email:    "manunggal@gmail.com",
+			Password: "adminadminadminadminadminadminadmin",
+			Role:     1,
+		},
+		code: 400,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "success register as company1",
+		body: models.UserRegisterArguments{
+			Email:    "company1@gmail.com",
+			Password: "admin123",
+			Role:     1,
+		},
+		code: 200,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "success register as company2",
+		body: models.UserRegisterArguments{
+			Email:    "company2@gmail.com",
+			Password: "admin123",
+			Role:     1,
+		},
+		code: 200,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "failed register, email exists",
+		body: models.UserRegisterArguments{
+			Email:    "company2@gmail.com",
+			Password: "admin123",
+			Role:     1,
+		},
+		code: 400,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "success register as candidate1",
+		body: models.UserRegisterArguments{
+			Email:    "candidate1@gmail.com",
+			Password: "admin123",
+			Role:     2,
+		},
+		code: 200,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "success register as candidate2",
+		body: models.UserRegisterArguments{
+			Email:    "candidate2@gmail.com",
+			Password: "admin123",
+			Role:     2,
+		},
+		code: 200,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "failed register, email exists",
+		body: models.UserRegisterArguments{
+			Email:    "candidate2@gmail.com",
+			Password: "admin123",
+			Role:     2,
+		},
+		code: 400,
+	})
+
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			body, err := json.Marshal(&tC.body)
+			AssertNoError(t, err)
+
+			response := server.Request(http.MethodPost, urlRegister, strings.NewReader(string(body)))
+			AssertEqualCode(t, response.StatusCode, tC.code)
+		})
+	}
+}
 
 func TestLoginUser(t *testing.T) {
 	db, err := InitPostgresTest()
@@ -163,74 +159,99 @@ func TestLoginUser(t *testing.T) {
 
 	server := NewServer(db)
 
-	testCases := []struct {
+	type testCase struct {
 		desc string
-		body string
+		body models.UserLoginArgument
 		code int
-	}{
-		{
-			desc: "failed register, email not valid",
-			body: `
-			{
-				"email": "company",
-				"password": "admin123"
-			}
-		`,
-			code: 400,
-		},
-		{
-			desc: "failed register, email required",
-			body: `
-			{
-				"password": "admin123"
-			}
-		`,
-			code: 400,
-		},
-		{
-			desc: "failed register, password required",
-			body: `
-			{
-				"email": "company@gmail.com"
-			}
-		`,
-			code: 400,
-		},
-		{
-			desc: "failed register, users not found",
-			body: `
-			{
-				"email": "company@gmail.com",
-				"password": "admin"
-			}
-		`,
-			code: 400,
-		},
-		{
-			desc: "success login user",
-			body: `
-			{
-				"email": "company1@gmail.com",
-				"password": "admin123"
-			}
-		`,
-			code: 200,
-		},
-		{
-			desc: "success login user",
-			body: `
-			{
-				"email": "candidate1@gmail.com",
-				"password": "admin123"
-			}
-		`,
-			code: 200,
-		},
 	}
+
+	var testCases []testCase
+
+	testCases = append(testCases, testCase{
+		desc: "failed register, email not valid",
+		body: models.UserLoginArgument{
+			Email:    "company",
+			Password: "admin123",
+		},
+		code: 400,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "failed register, email required",
+		body: models.UserLoginArgument{
+			Password: "admin123",
+		},
+		code: 400,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "failed register, password required",
+		body: models.UserLoginArgument{
+			Email: "company@gmail.com",
+		},
+		code: 400,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "failed register, users not found",
+		body: models.UserLoginArgument{
+			Email:    "company@gmail.com",
+			Password: "admin123",
+		},
+		code: 404,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "failed register, password not match",
+		body: models.UserLoginArgument{
+			Email:    "company1@gmail.com",
+			Password: "admin1234",
+		},
+		code: 400,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "success login user",
+		body: models.UserLoginArgument{
+			Email:    "company1@gmail.com",
+			Password: "admin123",
+		},
+		code: 200,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "success login user",
+		body: models.UserLoginArgument{
+			Email:    "company2@gmail.com",
+			Password: "admin123",
+		},
+		code: 200,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "success login user",
+		body: models.UserLoginArgument{
+			Email:    "candidate1@gmail.com",
+			Password: "admin123",
+		},
+		code: 200,
+	})
+
+	testCases = append(testCases, testCase{
+		desc: "success login user",
+		body: models.UserLoginArgument{
+			Email:    "candidate2@gmail.com",
+			Password: "admin123",
+		},
+		code: 200,
+	})
 
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			response := server.Request(http.MethodPost, urlLogin, strings.NewReader(tC.body))
+			body, err := json.Marshal(&tC.body)
+			AssertNoError(t, err)
+
+			response := server.Request(http.MethodPost, urlLogin, strings.NewReader(string(body)))
 			AssertEqualCode(t, response.StatusCode, tC.code)
 		})
 	}
