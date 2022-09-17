@@ -1,29 +1,22 @@
 package tests
 
 import (
-	"io"
 	"net/http"
-	"net/http/httptest"
 	"strings"
 	"testing"
 )
 
-func handlerRegisterTest(server http.Handler, body io.Reader) *http.Response {
-	request := httptest.NewRequest(http.MethodPost, "http://localhost:11010/users/register", body)
-
-	request.Header.Add("Content-Type", "application/json")
-	recorder := httptest.NewRecorder()
-	server.ServeHTTP(recorder, request)
-	response := recorder.Result()
-
-	return response
-}
+var (
+	urlRegister = "http://localhost:11010/users/register"
+	urlLogin    = "http://localhost:11010/users/login"
+)
 
 func TestRegisterUser(t *testing.T) {
 	db, err := InitPostgresTest()
 	AssertNoError(t, err)
 
-	server := SetupHandlerTest(db)
+	server := NewServer(db)
+
 	db.Exec("TRUNCATE users;")
 	db.Exec("TRUNCATE companies;")
 	db.Exec("TRUNCATE candidates;")
@@ -156,7 +149,86 @@ func TestRegisterUser(t *testing.T) {
 
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			response := handlerRegisterTest(server, strings.NewReader(tC.body))
+			response := server.Request(http.MethodPost, urlRegister, strings.NewReader(tC.body))
+			AssertEqualCode(t, response.StatusCode, tC.code)
+		})
+	}
+}
+
+func TestLoginUser(t *testing.T) {
+	db, err := InitPostgresTest()
+	AssertNoError(t, err)
+
+	server := NewServer(db)
+
+	testCases := []struct {
+		desc string
+		body string
+		code int
+	}{
+		{
+			desc: "failed register, email not valid",
+			body: `
+			{
+				"email": "company",
+				"password": "admin123"
+			}
+		`,
+			code: 400,
+		},
+		{
+			desc: "failed register, email required",
+			body: `
+			{
+				"password": "admin123"
+			}
+		`,
+			code: 400,
+		},
+		{
+			desc: "failed register, password required",
+			body: `
+			{
+				"email": "company@gmail.com"
+			}
+		`,
+			code: 400,
+		},
+		{
+			desc: "failed register, users not found",
+			body: `
+			{
+				"email": "company@gmail.com",
+				"password": "admin"
+			}
+		`,
+			code: 400,
+		},
+		{
+			desc: "success login user",
+			body: `
+			{
+				"email": "company1@gmail.com",
+				"password": "admin123"
+			}
+		`,
+			code: 200,
+		},
+		{
+			desc: "success login user",
+			body: `
+			{
+				"email": "candidate1@gmail.com",
+				"password": "admin123"
+			}
+		`,
+			code: 200,
+		},
+	}
+
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			response := server.Request(http.MethodPost, urlLogin, strings.NewReader(tC.body))
 			AssertEqualCode(t, response.StatusCode, tC.code)
 		})
 	}

@@ -2,12 +2,8 @@ package tests
 
 import (
 	"fmt"
-	"net/http"
 
-	"github.com/dhany007/golang-job-portal/services/delivery/rest"
 	"github.com/dhany007/golang-job-portal/services/repository/database"
-	"github.com/dhany007/golang-job-portal/services/repository/postgres"
-	"github.com/dhany007/golang-job-portal/services/usecase"
 	"github.com/dhany007/golang-job-portal/services/utils"
 )
 
@@ -32,19 +28,4 @@ func InitPostgresTest() (*database.DB, error) {
 	}
 
 	return db, nil
-}
-
-func SetupHandlerTest(db *database.DB) http.Handler {
-	userRepository := postgres.NewUserRepository(db)
-	userUsecase := usecase.NewUserUsecase(userRepository)
-
-	companyRepository := postgres.NewCompanyRepository(db)
-	companyUsecase := usecase.NewCompanyUsecase(companyRepository)
-
-	candidateRepo := postgres.NewCandidateRepository(db)
-	candidateUsecase := usecase.NewCandidateUsecase(candidateRepo)
-
-	router := rest.NewHandler(userUsecase, companyUsecase, candidateUsecase)
-
-	return router
 }
