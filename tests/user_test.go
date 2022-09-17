@@ -9,6 +9,7 @@ import (
 var (
 	urlRegister = "http://localhost:11010/users/register"
 	urlLogin    = "http://localhost:11010/users/login"
+	urlLogout   = "http://localhost:11010/users/logout"
 )
 
 func TestRegisterUser(t *testing.T) {
@@ -232,4 +233,14 @@ func TestLoginUser(t *testing.T) {
 			AssertEqualCode(t, response.StatusCode, tC.code)
 		})
 	}
+}
+
+func TestLogoutUser(t *testing.T) {
+	db, err := InitPostgresTest()
+	AssertNoError(t, err)
+
+	server := NewServer(db)
+
+	response := server.Request(http.MethodPost, urlLogout, nil)
+	AssertEqualCode(t, response.StatusCode, 200)
 }
