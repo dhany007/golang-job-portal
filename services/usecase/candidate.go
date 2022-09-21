@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/dhany007/golang-job-portal/models"
-	"github.com/dhany007/golang-job-portal/models/response"
 	"github.com/dhany007/golang-job-portal/services"
 )
 
@@ -25,20 +24,11 @@ func (c candidateUsecase) UpdateCandidate(ctx context.Context, args models.Candi
 	// check candidate by id given
 	candidate, err = c.repo.CheckCandidateById(ctx, args.ID)
 	if err != nil {
-		log.Printf("[company] [usecase] [UpdateCompany] while CheckCompanyById, args: %+v\n", args)
-		return
-	}
-
-	// check email availability
-	candidate, err = c.repo.CheckCandidateByEmail(ctx, args.Email)
-	if err != nil {
-		err = response.NewErrork(response.ErrorRegisEmail)
-		log.Printf("[company] [usecase] [UpdateCompany] while CheckCandidateByEmail, args: %+v\n", args)
+		log.Printf("[company] [usecase] [UpdateCandidate] while CheckCompanyById, args: %+v\n", args)
 		return
 	}
 
 	// reinitialize data
-	candidate.Email = args.Email
 	candidate.FirstName = args.FirstName
 	candidate.LastName = args.LastName
 	candidate.PhoneNumber = args.PhoneNumber
@@ -49,7 +39,7 @@ func (c candidateUsecase) UpdateCandidate(ctx context.Context, args models.Candi
 	// repository update candidate
 	err = c.repo.UpdateCandidate(ctx, candidate)
 	if err != nil {
-		log.Printf("[company] [usecase] [UpdateCompany] while repo.UpdateCandidate, args: %+v\n", args)
+		log.Printf("[company] [usecase] [UpdateCandidate] while repo.UpdateCandidate, args: %+v\n", args)
 		return
 	}
 

@@ -102,9 +102,10 @@ func (c companyRepository) GetListSizecode(ctx context.Context) (result []models
 	return
 }
 
-func (c companyRepository) CheckCompanyByEmail(ctx context.Context, email string) (result models.Company, err error) {
+func (c companyRepository) CheckCompanyByEmail(ctx context.Context, email string) (result []models.Company, err error) {
 	var (
-		row *sqlx.Rows
+		row     *sqlx.Rows
+		company models.Company
 	)
 
 	row, err = c.DB.QueryxContext(ctx, queries.QueryCheckAvailableEmail, email)
@@ -116,11 +117,13 @@ func (c companyRepository) CheckCompanyByEmail(ctx context.Context, email string
 	defer row.Close()
 
 	for row.Next() {
-		err = row.StructScan(&result)
+		err = row.StructScan(&company)
 		if err != nil {
 			log.Printf("[company] [repository] [CheckCompanyByEmail] while StructScan, err:%+v\n", err)
 			return
 		}
+
+		result = append(result, company)
 	}
 
 	return

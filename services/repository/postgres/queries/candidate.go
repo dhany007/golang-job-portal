@@ -27,14 +27,13 @@ const (
 	QueryUpdateCandidate = `
 		UPDATE candidates
 		SET
-			email = $1,
-			first_name = $2,
-			last_name = $3,
-			phone_number = $4,
-			telp_number = $5,
-			address = $6,
-			profil_picture_url = $7
+			first_name = $1,
+			last_name = $2,
+			phone_number = $3,
+			telp_number = $4,
+			address = $5,
+			profil_picture_url = $6
 		WHERE
-			id = $8
+			id = $7
 	`
 )
