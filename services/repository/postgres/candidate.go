@@ -76,7 +76,6 @@ func (c candidateRepository) UpdateCandidate(ctx context.Context, args models.Ca
 	_, err = c.DB.ExecContext(
 		ctx,
 		queries.QueryUpdateCandidate,
-		args.Email,
 		args.FirstName,
 		args.LastName,
 		args.PhoneNumber,
