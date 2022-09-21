@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/dhany007/golang-job-portal/models"
+	"github.com/dhany007/golang-job-portal/tests/repo"
 )
 
 var (
@@ -28,8 +29,15 @@ func TestUpdateCandidate(t *testing.T) {
 
 	tokenCandidate1, err := GetAccessToken(candidate1)
 	AssertNoError(t, err)
-	candidateId1 := "3cc1fefe-bde0-459e-a3af-ded514e6b102"
-	candidateId2 := "f05432a3-ce4d-45f9-8603-33378332f736"
+
+	user := repo.NewUser(db)
+	userCandidate1, err := user.GetUserByEmail("candidate1@gmail.com")
+	AssertNoError(t, err)
+	candidateId1 := userCandidate1.ID
+
+	userCandidate2, err := user.GetUserByEmail("candidate2@gmail.com")
+	AssertNoError(t, err)
+	candidateId2 := userCandidate2.ID
 
 	type testCase struct {
 		desc        string
@@ -43,7 +51,7 @@ func TestUpdateCandidate(t *testing.T) {
 	testCases = append(testCases, testCase{
 		desc:        "failed, while binding json",
 		body:        models.CandidateArgument{},
-		code:        400,
+		code:        http.StatusBadRequest,
 		candidateId: candidateId1,
 	})
 
@@ -53,7 +61,7 @@ func TestUpdateCandidate(t *testing.T) {
 			FirstName: "kalai",
 			LastName:  "saragih",
 		},
-		code:        400,
+		code:        http.StatusBadRequest,
 		candidateId: candidateId1,
 	})
 
@@ -64,7 +72,7 @@ func TestUpdateCandidate(t *testing.T) {
 			LastName:    "saragih",
 			PhoneNumber: "082109091010",
 		},
-		code:        400,
+		code:        http.StatusBadRequest,
 		candidateId: candidateId1,
 	})
 
@@ -78,7 +86,7 @@ func TestUpdateCandidate(t *testing.T) {
 			TelpNumber:       "082109091010",
 			ProfilPictureUrl: "profil.jpg",
 		},
-		code:        401,
+		code:        http.StatusUnauthorized,
 		candidateId: candidateId2,
 	})
 
@@ -92,7 +100,7 @@ func TestUpdateCandidate(t *testing.T) {
 			TelpNumber:       "082109091010",
 			ProfilPictureUrl: "profil.jpg",
 		},
-		code:        200,
+		code:        http.StatusOK,
 		candidateId: candidateId1,
 	})
 
