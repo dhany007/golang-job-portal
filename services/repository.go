@@ -16,7 +16,6 @@ type CompanyRepository interface {
 	GetListDresscode(ctx context.Context) (result []models.CompanySubCode, err error)
 	GetListBenefitcode(ctx context.Context) (result []models.CompanySubCode, err error)
 	GetListSizecode(ctx context.Context) (result []models.CompanySubCode, err error)
-	CheckCompanyByEmail(ctx context.Context, email string) (result models.Company, err error)
 	CheckCompanyById(ctx context.Context, id string) (result models.Company, err error)
 	UpdateCompany(ctx context.Context, args models.Company) (err error)
 	GetListCompanies(ctx context.Context, args models.ListData) (result []models.Companies, err error)
@@ -29,7 +28,7 @@ type CompanyRepository interface {
 
 type CandidateRepository interface {
 	UpdateCandidate(ctx context.Context, args models.Candidate) (err error)
-	CheckCandidateByEmail(ctx context.Context, email string) (result models.Candidate, err error)
+	CheckCandidateByEmail(ctx context.Context, email string) (result []models.Candidate, err error)
 	CheckCandidateById(ctx context.Context, id string) (result models.Candidate, err error)
 	GetDetailCandidate(ctx context.Context, id string) (result models.Candidate, err error)
 }

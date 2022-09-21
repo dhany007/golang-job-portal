@@ -29,6 +29,19 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
 | [JP-09](readme.md#get-list-dresscode-company) | Get list company dresscode, benefits, and size | As a company, i can get list code dresscode, benefits and size |
 | JP-10 | Test case | Create test case for all API phase 1 |
 
+
+## Installation and Tests
+use this command in root folder to test project:
+```
+  make test
+```
+
+run this project:
+```
+  go install
+  make start
+```
+
 ## Api Specs
 
 ### User Register
@@ -151,7 +164,6 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
   - Request: -
     ```
     {
-      "email": string,
       "name": string,required,
       "description": string,required,
       "address": string,required,

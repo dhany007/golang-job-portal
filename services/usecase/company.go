@@ -92,18 +92,10 @@ func (c companyUsecase) UpdateCompany(ctx context.Context, args models.CompanyAr
 		return
 	}
 
-	// check email availability if change
-	company, _ = c.repo.CheckCompanyByEmail(ctx, args.Email)
-	if company.ID != "" {
-		err = response.NewErrork(response.ErrorRegisEmail)
-		log.Println("[company] [usecase] [UpdateCompany] while CheckCompanyByEmail")
-		return
-	}
-
 	// reinitialize data
 	company = models.Company{
 		ID:               args.ID,
-		Email:            args.Email,
+		Email:            company.Email,
 		Name:             args.Name,
 		Description:      args.Description,
 		Address:          args.Address,
@@ -121,7 +113,7 @@ func (c companyUsecase) UpdateCompany(ctx context.Context, args models.CompanyAr
 	err = c.repo.UpdateCompany(ctx, company)
 	if err != nil {
 		err = response.NewErrork(response.ErrorServerError)
-		log.Printf("[company] [usecase] [UpdateCompany] while ErrorServerError, email:%+v\n", args.Email)
+		log.Printf("[company] [usecase] [UpdateCompany] while ErrorServerError, email:%+v\n", company.Email)
 		return result, err
 	}
 
@@ -129,7 +121,7 @@ func (c companyUsecase) UpdateCompany(ctx context.Context, args models.CompanyAr
 	result, err = c.repo.GetDetailCompany(ctx, args.ID)
 	if err != nil {
 		err = response.NewErrork(response.ErrorServerError)
-		log.Printf("[company] [usecase] [UpdateCompany] while ErrorServerError, email:%+v\n", args.Email)
+		log.Printf("[company] [usecase] [UpdateCompany] while ErrorServerError, email:%+v\n", company.Email)
 		return result, err
 	}
 

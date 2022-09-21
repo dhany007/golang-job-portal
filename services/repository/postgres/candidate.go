@@ -20,9 +20,10 @@ func NewCandidateRepository(db *database.DB) services.CandidateRepository {
 }
 
 // CheckCandidateByEmail implements services.CandidateRepository
-func (c candidateRepository) CheckCandidateByEmail(ctx context.Context, email string) (result models.Candidate, err error) {
+func (c candidateRepository) CheckCandidateByEmail(ctx context.Context, email string) (result []models.Candidate, err error) {
 	var (
-		rows *sqlx.Rows
+		rows      *sqlx.Rows
+		candidate models.Candidate
 	)
 
 	rows, err = c.DB.QueryxContext(ctx, queries.QueryCheckAvailableEmail, email)
@@ -34,11 +35,12 @@ func (c candidateRepository) CheckCandidateByEmail(ctx context.Context, email st
 	defer rows.Close()
 
 	for rows.Next() {
-		err = rows.StructScan(&result)
+		err = rows.StructScan(&candidate)
 		if err != nil {
 			log.Printf("[candidate] [repository] [CheckCandidateByEmail] while StructScan, err:%+v\n", err)
 			return
 		}
+		result = append(result, candidate)
 	}
 
 	return
@@ -74,7 +76,6 @@ func (c candidateRepository) UpdateCandidate(ctx context.Context, args models.Ca
 	_, err = c.DB.ExecContext(
 		ctx,
 		queries.QueryUpdateCandidate,
-		args.Email,
 		args.FirstName,
 		args.LastName,
 		args.PhoneNumber,
