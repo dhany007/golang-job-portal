@@ -3,13 +3,12 @@ module github.com/dhany007/golang-job-portal
 go 1.18
 
 require (
-	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
-	github.com/google/uuid v1.3.0 // indirect
-	github.com/jmoiron/sqlx v1.3.5 // indirect
-	github.com/joho/godotenv v1.4.0 // indirect
-	github.com/julienschmidt/httprouter v1.3.0 // indirect
-	github.com/lib/pq v1.10.6 // indirect
-	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90 // indirect
-	golang.org/x/net v0.0.0-20220909164309-bea034e7d591 // indirect
+	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/google/uuid v1.3.0
+	github.com/jmoiron/sqlx v1.3.5
+	github.com/joho/godotenv v1.4.0
+	github.com/julienschmidt/httprouter v1.3.0
+	github.com/lib/pq v1.10.6
+	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
 )
