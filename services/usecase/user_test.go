@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/dhany007/golang-job-portal/models"
@@ -82,16 +81,13 @@ func TestUsecase_User_Register(t *testing.T) {
 			tC.onCreateUser(repo)
 		}
 
-		result, serr := usecase.Register(context.Background(), tC.input)
-		fmt.Println("result ", result)
-		fmt.Println("serr ", serr)
+		result, err := usecase.Register(context.Background(), tC.input)
+
 		t.Run(tC.desc, func(t *testing.T) {
 			if tC.wantError {
-				// want error
-				assert.NotNil(t, serr)
+				assert.NotNil(t, err)
 			} else {
-				// want result
-				assert.Nil(t, serr)
+				assert.Nil(t, err)
 				assert.Equal(t, tC.input.Email, result.Email)
 			}
 		})
@@ -176,13 +172,13 @@ func TestUsecase_User_Login(t *testing.T) {
 			tC.onGetUserByEmail(repo)
 		}
 
-		_, serr := usecase.Login(context.Background(), tC.input)
+		_, err := usecase.Login(context.Background(), tC.input)
 
 		t.Run(tC.desc, func(t *testing.T) {
 			if tC.wantError {
-				assert.NotNil(t, serr)
+				assert.NotNil(t, err)
 			} else {
-				assert.Nil(t, serr)
+				assert.Nil(t, err)
 			}
 		})
 	}

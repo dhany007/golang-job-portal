@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/dhany007/golang-job-portal/models"
@@ -57,13 +58,13 @@ func TestUsecase_Company_GetListDresscode(t *testing.T) {
 			tC.onGetListDresscode(repo)
 		}
 
-		result, serr := usecase.GetListDresscode(context.Background())
+		result, err := usecase.GetListDresscode(context.Background())
 
 		t.Run(tC.desc, func(t *testing.T) {
 			if tC.wantError {
 				assert.Equal(t, len(result), 0)
 			} else {
-				assert.Nil(t, serr)
+				assert.Nil(t, err)
 			}
 		})
 	}
@@ -116,13 +117,13 @@ func TestUsecase_Company_GetListSizecode(t *testing.T) {
 			tC.onGetListSizecode(repo)
 		}
 
-		result, serr := usecase.GetListSizecode(context.Background())
+		result, err := usecase.GetListSizecode(context.Background())
 
 		t.Run(tC.desc, func(t *testing.T) {
 			if tC.wantError {
 				assert.Equal(t, len(result), 0)
 			} else {
-				assert.Nil(t, serr)
+				assert.Nil(t, err)
 			}
 		})
 	}
@@ -175,13 +176,132 @@ func TestUsecase_Company_GetListBenefitcode(t *testing.T) {
 			tC.onGetListBenefitcode(repo)
 		}
 
-		result, serr := usecase.GetListBenefitcode(context.Background())
+		result, err := usecase.GetListBenefitcode(context.Background())
 
 		t.Run(tC.desc, func(t *testing.T) {
 			if tC.wantError {
 				assert.Equal(t, len(result), 0)
 			} else {
-				assert.Nil(t, serr)
+				assert.Nil(t, err)
+			}
+		})
+	}
+}
+
+func TestUscase_Company_UpdateCompany(t *testing.T) {
+	type testCase struct {
+		desc               string
+		wantError          bool
+		input              models.CompanyArgument
+		onCheckCompanyById func(mock *mocks.MockCompanyRepository)
+		onUpdateCompany    func(mock *mocks.MockCompanyRepository)
+		onGetDetailCompany func(mock *mocks.MockCompanyRepository)
+	}
+
+	var testCases []testCase
+
+	testCases = append(testCases, testCase{
+		desc:      "failed, company not found",
+		wantError: true,
+		input: models.CompanyArgument{
+			ID:          "xxx",
+			Name:        "new company",
+			Description: "new description",
+		},
+		onCheckCompanyById: func(mock *mocks.MockCompanyRepository) {
+			mock.EXPECT().CheckCompanyById(gomock.Any(), gomock.Any()).Return(
+				models.Company{},
+				nil,
+			)
+		},
+	})
+
+	testCases = append(testCases, testCase{
+		desc:      "failed, something wrong",
+		wantError: true,
+		input: models.CompanyArgument{
+			ID:          "xxx",
+			Name:        "new company",
+			Description: "new description",
+		},
+		onCheckCompanyById: func(mock *mocks.MockCompanyRepository) {
+			mock.EXPECT().CheckCompanyById(gomock.Any(), gomock.Any()).Return(
+				models.Company{
+					ID:          "xxx",
+					Name:        "company",
+					Description: "description",
+				},
+				nil,
+			)
+		},
+		onUpdateCompany: func(mock *mocks.MockCompanyRepository) {
+			mock.EXPECT().UpdateCompany(gomock.Any(), gomock.Any()).Return(
+				errors.New("something wrong"),
+			)
+		},
+	})
+
+	testCases = append(testCases, testCase{
+		desc:      "success update company",
+		wantError: false,
+		input: models.CompanyArgument{
+			ID:          "xxx",
+			Name:        "new company",
+			Description: "new description",
+		},
+		onCheckCompanyById: func(mock *mocks.MockCompanyRepository) {
+			mock.EXPECT().CheckCompanyById(gomock.Any(), gomock.Any()).Return(
+				models.Company{
+					ID:          "xxx",
+					Name:        "company",
+					Description: "description",
+				},
+				nil,
+			)
+		},
+		onUpdateCompany: func(mock *mocks.MockCompanyRepository) {
+			mock.EXPECT().UpdateCompany(gomock.Any(), gomock.Any()).Return(
+				nil,
+			)
+		},
+		onGetDetailCompany: func(mock *mocks.MockCompanyRepository) {
+			mock.EXPECT().GetDetailCompany(gomock.Any(), gomock.Any()).Return(
+				models.Company{
+					ID:          "xxx",
+					Name:        "new company",
+					Description: "new description",
+				},
+				nil,
+			)
+		},
+	})
+
+	for _, tC := range testCases {
+		mockCtrl := gomock.NewController(t)
+		defer mockCtrl.Finish()
+
+		repo := mocks.NewMockCompanyRepository(mockCtrl)
+		usecase := companyUsecase{repo}
+
+		if tC.onCheckCompanyById != nil {
+			tC.onCheckCompanyById(repo)
+		}
+		if tC.onUpdateCompany != nil {
+			tC.onUpdateCompany(repo)
+		}
+		if tC.onGetDetailCompany != nil {
+			tC.onGetDetailCompany(repo)
+		}
+
+		result, err := usecase.UpdateCompany(context.Background(), tC.input)
+
+		t.Run(tC.desc, func(t *testing.T) {
+			if tC.wantError {
+				assert.NotNil(t, err)
+			} else {
+				assert.Equal(t, tC.input.ID, result.ID)
+				assert.Nil(t, err)
+				assert.NotNil(t, result)
 			}
 		})
 	}
