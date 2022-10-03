@@ -448,3 +448,95 @@ func TestUsecase_Company_GetDetailCompany(t *testing.T) {
 		})
 	}
 }
+
+func TestUsecase_Company_CreateReviewCompany(t *testing.T) {
+	type testCase struct {
+		desc                  string
+		wantError             bool
+		input                 models.ReviewCompanyArgument
+		onCheckCompanyById    func(mock *mocks.MockCompanyRepository)
+		onCreateReviewCompany func(mock *mocks.MockCompanyRepository)
+	}
+
+	var testCases []testCase
+
+	testCases = append(testCases, testCase{
+		desc:      "failed, company not found",
+		wantError: true,
+		input: models.ReviewCompanyArgument{
+			CompanyID:   "xxx",
+			CandidateID: "yyy",
+			Rating:      5,
+			Review:      "test review",
+		},
+		onCheckCompanyById: func(mock *mocks.MockCompanyRepository) {
+			mock.EXPECT().CheckCompanyById(gomock.Any(), gomock.Any()).Return(
+				models.Company{},
+				nil,
+			)
+		},
+	})
+
+	testCases = append(testCases, testCase{
+		desc:      "success get company review",
+		wantError: false,
+		input: models.ReviewCompanyArgument{
+			CompanyID:   "xxx",
+			CandidateID: "yyy",
+			Rating:      5,
+			Review:      "test review",
+		},
+		onCheckCompanyById: func(mock *mocks.MockCompanyRepository) {
+			mock.EXPECT().CheckCompanyById(gomock.Any(), gomock.Any()).Return(
+				models.Company{
+					ID:    "xxx",
+					Email: "company@gmail.com",
+					Name:  "company",
+				},
+				nil,
+			)
+		},
+		onCreateReviewCompany: func(mock *mocks.MockCompanyRepository) {
+			mock.EXPECT().CreateReviewCompany(gomock.Any(), gomock.Any()).Return(
+				models.ReviewCompany{
+					ID:          1,
+					CompanyID:   "xxx",
+					CandidateID: "yyy",
+					Rating:      5,
+					Review:      "test review",
+				},
+				nil,
+			)
+		},
+	})
+
+	for _, tC := range testCases {
+		mockCtrl := gomock.NewController(t)
+		defer mockCtrl.Finish()
+
+		repo := mocks.NewMockCompanyRepository(mockCtrl)
+		usecase := companyUsecase{repo}
+
+		if tC.onCheckCompanyById != nil {
+			tC.onCheckCompanyById(repo)
+		}
+		if tC.onCreateReviewCompany != nil {
+			tC.onCreateReviewCompany(repo)
+		}
+
+		result, err := usecase.CreateReviewCompany(context.Background(), tC.input)
+
+		t.Run(tC.desc, func(t *testing.T) {
+			if tC.wantError {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
+				assert.NotNil(t, result)
+				assert.Equal(t, tC.input.CandidateID, result.CandidateID)
+				assert.Equal(t, tC.input.CompanyID, result.CompanyID)
+				assert.Equal(t, tC.input.Rating, result.Rating)
+				assert.Equal(t, tC.input.Review, result.Review)
+			}
+		})
+	}
+}

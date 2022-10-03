@@ -10,7 +10,6 @@ import (
 	"github.com/dhany007/golang-job-portal/models"
 	"github.com/dhany007/golang-job-portal/models/response"
 	"github.com/dhany007/golang-job-portal/services"
-	"github.com/dhany007/golang-job-portal/services/utils"
 )
 
 type companyUsecase struct {
@@ -200,19 +199,6 @@ func (c companyUsecase) CreateReviewCompany(ctx context.Context, args models.Rev
 	if company.ID == "" {
 		err = response.NewErrork(response.ErrorNotFound)
 		log.Println("[company] [usecase] [CreateReviewCompany] while ErrorNotFound")
-		return
-	}
-
-	// only candidate can post review and check authorized
-	candidate := utils.GetAuthorization(ctx)
-	if candidate.Role != 2 {
-		err = response.NewErrork(response.ErrorOnlyCandidate)
-		log.Println("[company] [usecase] [CreateReviewCompany] while ErrorOnlyCandidate")
-		return
-	}
-	if candidate.ID != args.CandidateID {
-		err = response.NewErrork(response.ErrorUnauthorized)
-		log.Println("[company] [usecase] [CreateReviewCompany] while ErrorUnauthorized")
 		return
 	}
 
