@@ -188,7 +188,7 @@ func TestUsecase_Company_GetListBenefitcode(t *testing.T) {
 	}
 }
 
-func TestUscase_Company_UpdateCompany(t *testing.T) {
+func TestUsecase_Company_UpdateCompany(t *testing.T) {
 	type testCase struct {
 		desc               string
 		wantError          bool
@@ -302,6 +302,148 @@ func TestUscase_Company_UpdateCompany(t *testing.T) {
 				assert.Equal(t, tC.input.ID, result.ID)
 				assert.Nil(t, err)
 				assert.NotNil(t, result)
+			}
+		})
+	}
+}
+
+func TestUsecase_Company_GetListCompany(t *testing.T) {
+	type testCase struct {
+		desc                string
+		wantError           bool
+		input               models.ListData
+		onGetListCompany    func(mock *mocks.MockCompanyRepository)
+		onGetCountCompanies func(mock *mocks.MockCompanyRepository)
+	}
+
+	var testCases []testCase
+
+	testCases = append(testCases, testCase{
+		desc:      "failed, company not found",
+		wantError: true,
+		input:     models.ListData{},
+		onGetListCompany: func(mock *mocks.MockCompanyRepository) {
+			mock.EXPECT().GetListCompanies(gomock.Any(), gomock.Any()).Return(
+				nil,
+				nil,
+			)
+		},
+	})
+
+	testCases = append(testCases, testCase{
+		desc:      "success get list companies",
+		wantError: false,
+		input:     models.ListData{},
+		onGetListCompany: func(mock *mocks.MockCompanyRepository) {
+			mock.EXPECT().GetListCompanies(gomock.Any(), gomock.Any()).Return(
+				[]models.Companies{
+					{
+						ID:          "xxx",
+						Name:        "company1",
+						Rating:      5,
+						CountReview: 2,
+					},
+					{
+						ID:          "yyy",
+						Name:        "company2",
+						Rating:      4,
+						CountReview: 2,
+					},
+				},
+				nil,
+			)
+		},
+		onGetCountCompanies: func(mock *mocks.MockCompanyRepository) {
+			mock.EXPECT().GetCountCompanies(gomock.Any()).Return(2, nil)
+		},
+	})
+
+	for _, tC := range testCases {
+		mockCtrl := gomock.NewController(t)
+		defer mockCtrl.Finish()
+
+		repo := mocks.NewMockCompanyRepository(mockCtrl)
+		usecase := companyUsecase{repo}
+
+		if tC.onGetListCompany != nil {
+			tC.onGetListCompany(repo)
+		}
+		if tC.onGetCountCompanies != nil {
+			tC.onGetCountCompanies(repo)
+		}
+
+		companies, err := usecase.GetListCompanies(context.Background(), tC.input)
+		t.Run(tC.desc, func(t *testing.T) {
+			if tC.wantError {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
+				assert.NotNil(t, companies)
+			}
+		})
+	}
+}
+
+func TestUsecase_Company_GetDetailCompany(t *testing.T) {
+	type testCase struct {
+		desc               string
+		wantError          bool
+		companyId          string
+		onGetDetailCompany func(mock *mocks.MockCompanyRepository)
+	}
+
+	var testCases []testCase
+
+	testCases = append(testCases, testCase{
+		desc:      "failed, company not found",
+		wantError: true,
+		companyId: "xxx",
+		onGetDetailCompany: func(mock *mocks.MockCompanyRepository) {
+			mock.EXPECT().GetDetailCompany(gomock.Any(), gomock.Any()).Return(
+				models.Company{},
+				nil,
+			)
+		},
+	})
+
+	testCases = append(testCases, testCase{
+		desc:      "success get detail company",
+		wantError: false,
+		companyId: "xxx",
+		onGetDetailCompany: func(mock *mocks.MockCompanyRepository) {
+			mock.EXPECT().GetDetailCompany(gomock.Any(), gomock.Any()).Return(
+				models.Company{
+					ID:          "xxx",
+					Email:       "company@gmail.com",
+					Name:        "company name",
+					Description: "description company",
+				},
+				nil,
+			)
+		},
+	})
+
+	for _, tC := range testCases {
+
+		mockCtrl := gomock.NewController(t)
+		mockCtrl.Finish()
+
+		repo := mocks.NewMockCompanyRepository(mockCtrl)
+		usecase := companyUsecase{repo}
+
+		if tC.onGetDetailCompany != nil {
+			tC.onGetDetailCompany(repo)
+		}
+
+		company, err := usecase.GetDetailCompany(context.Background(), tC.companyId)
+
+		t.Run(tC.desc, func(t *testing.T) {
+			if tC.wantError {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
+				assert.NotNil(t, company)
+				assert.Equal(t, company.ID, tC.companyId)
 			}
 		})
 	}
