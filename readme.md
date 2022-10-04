@@ -29,6 +29,7 @@ source: https://medium.com/easyread/golang-clean-archithecture-efd6d7c43047
 | JP-09 | Get list company dresscode, benefits, and size | As a company, i can get list code dresscode, benefits and size |
 | JP-10 | Integration Test case | Create integration test case for all API phase 1 |
 | JP-11 | Unit Test case | Create unit test case for all API phase 1 |
+| JP-12 | Embed Query SQL | Move all query to file sql with golang embed |
 |---|---|---|
 | PHASE II |
 

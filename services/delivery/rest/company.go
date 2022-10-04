@@ -210,6 +210,19 @@ func (h handler) PostReviewCompany(w http.ResponseWriter, r *http.Request, ps ht
 		return
 	}
 
+	// only candidate can post review and check authorized
+	candidate := utils.GetAuthorization(r.Context())
+	if candidate.Role != 2 {
+		log.Println("[company] [delivery] [CreateReviewCompany] while ErrorOnlyCandidate")
+		response.ResultError(w, response.ErrorOnlyCandidate, err)
+		return
+	}
+	if candidate.ID != args.CandidateID {
+		log.Println("[company] [delivery] [CreateReviewCompany] while ErrorUnauthorized")
+		response.ResultError(w, response.ErrorUnauthorized, err)
+		return
+	}
+
 	// usecase detail company
 	result, err = h.companyUsecase.CreateReviewCompany(r.Context(), args)
 	if err != nil {

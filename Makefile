@@ -3,3 +3,6 @@ start:
 
 test:
 	go test -v ./tests
+
+mocks :
+	mockgen -source=services/repository.go -destination=services/repository/postgres/mocks/repository.go -package=mocks
