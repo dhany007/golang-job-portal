@@ -9,7 +9,6 @@ import (
 	"github.com/dhany007/golang-job-portal/models/response"
 	"github.com/dhany007/golang-job-portal/services"
 	"github.com/dhany007/golang-job-portal/services/repository/database"
-	"github.com/dhany007/golang-job-portal/services/repository/postgres/queries"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -27,7 +26,7 @@ func (c companyRepository) GetListDresscode(ctx context.Context) (result []model
 		dress models.CompanySubCode
 	)
 
-	row, err = c.DB.QueryxContext(ctx, queries.QueryListCompanyDresscodes)
+	row, err = c.DB.QueryxContext(ctx, QueryListCompanyDresscodes)
 	if err != nil {
 		log.Printf("[company] [repository] [GetListDresscode] while QueryListCompanyDresscode, err:%+v\n", err)
 		return
@@ -54,7 +53,7 @@ func (c companyRepository) GetListBenefitcode(ctx context.Context) (result []mod
 		benefit models.CompanySubCode
 	)
 
-	row, err = c.DB.QueryxContext(ctx, queries.QueryListCompanyBenefitcodes)
+	row, err = c.DB.QueryxContext(ctx, QueryListCompanyBenefitcodes)
 	if err != nil {
 		log.Printf("[company] [repository] [GetListBenefitcode] while QueryListCompanyBenefitcode, err:%+v\n", err)
 		return
@@ -81,7 +80,7 @@ func (c companyRepository) GetListSizecode(ctx context.Context) (result []models
 		size models.CompanySubCode
 	)
 
-	row, err = c.DB.QueryxContext(ctx, queries.QueryListCompanySizecodes)
+	row, err = c.DB.QueryxContext(ctx, QueryListCompanySizecodes)
 	if err != nil {
 		log.Printf("[company] [repository] [GetListSizecode] while QueryListCompanySizecodes, err:%+v\n", err)
 		return
@@ -108,9 +107,9 @@ func (c companyRepository) CheckCompanyByEmail(ctx context.Context, email string
 		company models.Company
 	)
 
-	row, err = c.DB.QueryxContext(ctx, queries.QueryCheckAvailableEmail, email)
+	row, err = c.DB.QueryxContext(ctx, QueryCheckAvailableEmail, email)
 	if err != nil {
-		log.Printf("[company] [repository] [CheckCompanyByEmail] while queries.QueryCheckCompanyByEmail, err:%+v\n", err)
+		log.Printf("[company] [repository] [CheckCompanyByEmail] while QueryCheckCompanyByEmail, err:%+v\n", err)
 		return
 	}
 
@@ -134,9 +133,9 @@ func (c companyRepository) CheckCompanyById(ctx context.Context, id string) (res
 		row *sqlx.Rows
 	)
 
-	row, err = c.DB.QueryxContext(ctx, queries.QueryCheckUsersById, id)
+	row, err = c.DB.QueryxContext(ctx, QueryCheckUsersById, id)
 	if err != nil {
-		log.Printf("[company] [repository] [CheckCompanyById] while queries.QueryCheckUsersById, err:%+v\n", err)
+		log.Printf("[company] [repository] [CheckCompanyById] while QueryCheckUsersById, err:%+v\n", err)
 		return
 	}
 
@@ -157,7 +156,7 @@ func (c companyRepository) UpdateCompany(ctx context.Context, args models.Compan
 	// update company
 	_, err = c.DB.ExecContext(
 		ctx,
-		queries.QueryUpdateCompany,
+		QueryUpdateCompany,
 		args.Email,
 		args.Name,
 		args.Description,
@@ -180,7 +179,7 @@ func (c companyRepository) UpdateCompany(ctx context.Context, args models.Compan
 	// update user
 	_, err = c.DB.ExecContext(
 		ctx,
-		queries.QueryUpdateEmailUser,
+		QueryUpdateEmailUser,
 		args.Email,
 		args.ID,
 	)
@@ -191,7 +190,7 @@ func (c companyRepository) UpdateCompany(ctx context.Context, args models.Compan
 	}
 
 	// delete benefit existing
-	_, err = c.DB.ExecContext(ctx, queries.QueryDeleteBenefitsByCompanyID, args.ID)
+	_, err = c.DB.ExecContext(ctx, QueryDeleteBenefitsByCompanyID, args.ID)
 	if err != nil {
 		log.Printf("[company] [repository] [UpdateCompany] while QueryDeleteBenefitsByCompanyID, err:%+v\n", err)
 		return
@@ -199,7 +198,7 @@ func (c companyRepository) UpdateCompany(ctx context.Context, args models.Compan
 
 	// insert benefit company
 	for _, v := range args.Benefit {
-		_, err = c.DB.ExecContext(ctx, queries.QueryInsertBenefit, args.ID, v.ID)
+		_, err = c.DB.ExecContext(ctx, QueryInsertBenefit, args.ID, v.ID)
 		if err != nil {
 			log.Printf("[company] [repository] [UpdateCompany] while QueryInsertBenefit, err:%+v\n", err)
 			return
@@ -215,7 +214,7 @@ func (c companyRepository) GetListCompanies(ctx context.Context, args models.Lis
 		company models.Companies
 	)
 
-	row, err = c.DB.QueryxContext(ctx, queries.QueryListCompanies, args.Limit, args.Offset)
+	row, err = c.DB.QueryxContext(ctx, QueryListCompanies, args.Limit, args.Offset)
 	if err != nil {
 		log.Printf("[company] [repository] [GetListCompanies] while QueryListCompanies, err:%+v\n", err)
 		return
@@ -247,11 +246,11 @@ func (c companyRepository) GetDetailCompany(ctx context.Context, companyId strin
 	// get detail company
 	row, err = c.DB.QueryxContext(
 		ctx,
-		queries.QueryDetailCompanyByID,
+		QueryDetailCompanyByID,
 		companyId,
 	)
 	if err != nil {
-		log.Printf("[company] [repository] [GetDetailCompany] while queries.QueryGetDetailCompanyByID, err:%+v\n", err)
+		log.Printf("[company] [repository] [GetDetailCompany] while QueryGetDetailCompanyByID, err:%+v\n", err)
 		return
 	}
 
@@ -266,9 +265,9 @@ func (c companyRepository) GetDetailCompany(ctx context.Context, companyId strin
 	}
 
 	// get benefit
-	row, err = c.DB.QueryxContext(ctx, queries.QueryListBenefitByCompanyID, companyId)
+	row, err = c.DB.QueryxContext(ctx, QueryListBenefitByCompanyID, companyId)
 	if err != nil {
-		log.Printf("[company] [repository] [GetDetailCompany] while queries.QueryListBenefitByCompanyID, err:%+v\n", err)
+		log.Printf("[company] [repository] [GetDetailCompany] while QueryListBenefitByCompanyID, err:%+v\n", err)
 		return
 	}
 
@@ -284,9 +283,9 @@ func (c companyRepository) GetDetailCompany(ctx context.Context, companyId strin
 	result.Benefit = benefits
 
 	// get review
-	row, err = c.DB.QueryxContext(ctx, queries.QueryRatingCompany, companyId)
+	row, err = c.DB.QueryxContext(ctx, QueryRatingCompany, companyId)
 	if err != nil {
-		log.Printf("[company] [repository] [GetDetailCompany] while queries.QueryRatingCompany, err:%+v\n", err)
+		log.Printf("[company] [repository] [GetDetailCompany] while QueryRatingCompany, err:%+v\n", err)
 		return
 	}
 
@@ -310,7 +309,7 @@ func (c companyRepository) CreateReviewCompany(ctx context.Context, args models.
 	// insert review
 	_, err = c.DB.ExecContext(
 		ctx,
-		queries.QueryInsertReviewCompany,
+		QueryInsertReviewCompany,
 		args.CompanyID,
 		args.CandidateID,
 		args.Rating,
@@ -331,12 +330,12 @@ func (c companyRepository) CreateReviewCompany(ctx context.Context, args models.
 	// get detail company review
 	row, err = c.DB.QueryxContext(
 		ctx,
-		queries.QueryGetReviewCompanyID,
+		QueryGetReviewCompanyID,
 		args.CompanyID,
 		args.CandidateID,
 	)
 	if err != nil {
-		log.Printf("[company] [repository] [CreateReviewCompany] while queries.QueryGetReviewCompanyID, err:%+v\n", err)
+		log.Printf("[company] [repository] [CreateReviewCompany] while QueryGetReviewCompanyID, err:%+v\n", err)
 		return
 	}
 
@@ -361,7 +360,7 @@ func (c companyRepository) GetReviewCompany(ctx context.Context, companyID strin
 
 	row, err = c.DB.QueryxContext(
 		ctx,
-		queries.QueryGetReviewCompany,
+		QueryGetReviewCompany,
 		companyID,
 		args.Limit,
 		args.Offset,
@@ -389,7 +388,7 @@ func (c companyRepository) GetReviewCompany(ctx context.Context, companyID strin
 }
 
 func (c companyRepository) GetCountReviewCompany(ctx context.Context, companyID string) (total int, err error) {
-	row, err := c.DB.QueryxContext(ctx, queries.QueryGetCountReviewCompany, companyID)
+	row, err := c.DB.QueryxContext(ctx, QueryGetCountReviewCompany, companyID)
 	if err != nil {
 		log.Printf("[company] [repository] [GetCountReviewCompany] while QueryGetCountReviewCompany, err:%+v\n", err)
 		return
@@ -409,7 +408,7 @@ func (c companyRepository) GetCountReviewCompany(ctx context.Context, companyID 
 }
 
 func (c companyRepository) GetCountCompanies(ctx context.Context) (total int, err error) {
-	row, err := c.DB.QueryxContext(ctx, queries.QueryGetCountCompanies)
+	row, err := c.DB.QueryxContext(ctx, QueryGetCountCompanies)
 	if err != nil {
 		log.Printf("[company] [repository] [GetCountCompanies] while QueryGetCountCompanies, err:%+v\n", err)
 		return

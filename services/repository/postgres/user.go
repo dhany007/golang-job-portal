@@ -9,7 +9,6 @@ import (
 	"github.com/dhany007/golang-job-portal/models"
 	"github.com/dhany007/golang-job-portal/services"
 	"github.com/dhany007/golang-job-portal/services/repository/database"
-	"github.com/dhany007/golang-job-portal/services/repository/postgres/queries"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -25,7 +24,7 @@ func (u userRepository) GetUserByEmail(ctx context.Context, email string) (resul
 	var (
 		row *sqlx.Rows
 	)
-	row, err = u.DB.QueryxContext(ctx, queries.QueryGetUserByEmail, email)
+	row, err = u.DB.QueryxContext(ctx, QueryGetUserByEmail, email)
 
 	if err != nil {
 		log.Printf("[user] [repository] [GetUserByEmail] while QueryxContext, err:%+v\n", err)
@@ -53,7 +52,7 @@ func (u userRepository) CreateUser(ctx context.Context, args models.User) (resul
 	// insert user
 	_, err = u.DB.ExecContext(
 		ctx,
-		queries.QueryInsertUser,
+		QueryInsertUser,
 		args.ID,
 		args.Email,
 		args.Password,
@@ -70,7 +69,7 @@ func (u userRepository) CreateUser(ctx context.Context, args models.User) (resul
 		// insert company
 		_, err = u.DB.ExecContext(
 			ctx,
-			queries.QueryInsertCompany,
+			QueryInsertCompany,
 			args.ID,
 			args.Email,
 			name,
@@ -84,7 +83,7 @@ func (u userRepository) CreateUser(ctx context.Context, args models.User) (resul
 		// insert candidate
 		_, err = u.DB.ExecContext(
 			ctx,
-			queries.QueryInsertCandidate,
+			QueryInsertCandidate,
 			args.ID,
 			args.Email,
 			name,
@@ -111,7 +110,7 @@ func (u userRepository) GetUserById(ctx context.Context, id string) (result mode
 	var (
 		row *sqlx.Rows
 	)
-	row, err = u.DB.QueryxContext(ctx, queries.QueryGetUserById, id)
+	row, err = u.DB.QueryxContext(ctx, QueryGetUserById, id)
 
 	if err != nil {
 		log.Printf("[user] [repository] [GetUserById] while QueryxContext, err:%+v\n", err)
