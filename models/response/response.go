@@ -142,7 +142,9 @@ func ResultError(w http.ResponseWriter, code int, err error) {
 		}
 	}
 
-	result.Err = err.Error()
+	if err != nil {
+		result.Err = err.Error()
+	}
 
 	write(w, result)
 }

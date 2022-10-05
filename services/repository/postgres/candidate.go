@@ -4,10 +4,11 @@ import (
 	"context"
 	"log"
 
+	_ "embed"
+
 	"github.com/dhany007/golang-job-portal/models"
 	"github.com/dhany007/golang-job-portal/services"
 	"github.com/dhany007/golang-job-portal/services/repository/database"
-	"github.com/dhany007/golang-job-portal/services/repository/postgres/queries"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -26,7 +27,7 @@ func (c candidateRepository) CheckCandidateByEmail(ctx context.Context, email st
 		candidate models.Candidate
 	)
 
-	rows, err = c.DB.QueryxContext(ctx, queries.QueryCheckAvailableEmail, email)
+	rows, err = c.DB.QueryxContext(ctx, QueryCheckAvailableEmail, email)
 	if err != nil {
 		log.Printf("[candidate] [repository] [CheckCandidateByEmail] while QueryCheckAvailableEmail, err:%+v\n", err)
 		return
@@ -52,7 +53,7 @@ func (c candidateRepository) CheckCandidateById(ctx context.Context, id string) 
 		rows *sqlx.Rows
 	)
 
-	rows, err = c.DB.QueryxContext(ctx, queries.QueryCheckUsersById, id)
+	rows, err = c.DB.QueryxContext(ctx, QueryCheckUsersById, id)
 	if err != nil {
 		log.Printf("[candidate] [repository] [CheckCandidateById] while QueryCheckUsersById, err:%+v\n", err)
 		return
@@ -75,7 +76,7 @@ func (c candidateRepository) CheckCandidateById(ctx context.Context, id string) 
 func (c candidateRepository) UpdateCandidate(ctx context.Context, args models.Candidate) (err error) {
 	_, err = c.DB.ExecContext(
 		ctx,
-		queries.QueryUpdateCandidate,
+		QueryUpdateCandidate,
 		args.FirstName,
 		args.LastName,
 		args.PhoneNumber,
@@ -99,7 +100,7 @@ func (c candidateRepository) GetDetailCandidate(ctx context.Context, id string) 
 		rows *sqlx.Rows
 	)
 
-	rows, err = c.DB.QueryxContext(ctx, queries.QueryGetDetailCandidate, id)
+	rows, err = c.DB.QueryxContext(ctx, QueryGetDetailCandidate, id)
 	if err != nil {
 		log.Printf("[candidate] [repository] [GetDetailCandidate] while QueryGetDetailCandidate, err:%+v\n", err)
 		return
