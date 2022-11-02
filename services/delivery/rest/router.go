@@ -44,6 +44,7 @@ func NewHandler(
 
 	// candidates router
 	router.PUT("/candidates/:candidateId", middleware.Authentication(h.UpdateCandidate))
+	router.POST("/candidates/experience", middleware.Authentication(h.AddExperience))
 
 	return
 }

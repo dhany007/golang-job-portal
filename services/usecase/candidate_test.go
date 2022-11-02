@@ -142,3 +142,82 @@ func TestUsecase_Candidate_UpdateCandidate(t *testing.T) {
 		})
 	}
 }
+
+func TestUsecase_Candidate_AddExperience(t *testing.T) {
+	type testCase struct {
+		desc            string
+		wantError       bool
+		input           models.CandidateExperienceArgument
+		onAddExperience func(mock *mocks.MockCandidateRepository)
+	}
+
+	var testCases []testCase
+
+	testCases = append(testCases, testCase{
+		desc:      "failed, internal server error",
+		wantError: true,
+		input: models.CandidateExperienceArgument{
+			CandidateID: "xxx",
+			CompanyName: "xxx",
+			Title:       "senior software engineer",
+			Description: "senior software engineer",
+			DateStart:   "0001-01-01T00:00:00Z",
+			DateEnd:     "0001-01-01T00:00:00Z",
+		},
+		onAddExperience: func(mock *mocks.MockCandidateRepository) {
+			mock.EXPECT().AddExperience(gomock.Any(), gomock.Any()).Return(
+				models.CandidateExperience{},
+				errors.New("internal server error"),
+			)
+		},
+	})
+
+	testCases = append(testCases, testCase{
+		desc:      "success add candidate experience",
+		wantError: false,
+		input: models.CandidateExperienceArgument{
+			CandidateID: "xxx",
+			CompanyName: "xxx",
+			Title:       "senior software engineer",
+			Description: "senior software engineer",
+			DateStart:   "0001-01-01T00:00:00Z",
+			DateEnd:     "0001-01-01T00:00:00Z",
+		},
+		onAddExperience: func(mock *mocks.MockCandidateRepository) {
+			mock.EXPECT().AddExperience(gomock.Any(), gomock.Any()).Return(
+				models.CandidateExperience{
+					ID:          0,
+					CandidateID: "xxx",
+					CompanyName: "xxx",
+					Title:       "senior software engineer",
+					Description: "senior software engineer",
+				},
+				nil,
+			)
+		},
+	})
+
+	for _, tC := range testCases {
+		mockCtl := gomock.NewController(t)
+		defer mockCtl.Finish()
+
+		repo := mocks.NewMockCandidateRepository(mockCtl)
+		usecase := candidateUsecase{repo}
+
+		if tC.onAddExperience != nil {
+			tC.onAddExperience(repo)
+		}
+
+		candidate, err := usecase.AddExperience(context.Background(), tC.input)
+
+		t.Run(tC.desc, func(t *testing.T) {
+			if tC.wantError {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
+				assert.NotNil(t, candidate)
+				assert.Equal(t, tC.input.CandidateID, candidate.CandidateID)
+			}
+		})
+	}
+}

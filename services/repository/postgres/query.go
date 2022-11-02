@@ -79,7 +79,6 @@ var (
 
 // candidates query
 var (
-
 	//go:embed schemas/candidates/jobportal.candidates--insert_candidate.sql
 	QueryInsertCandidate string
 
@@ -88,4 +87,7 @@ var (
 
 	//go:embed schemas/candidates/jobportal.candidates--update_candidate.sql
 	QueryUpdateCandidate string
+
+	//go:embed schemas/candidates/jobportal.candidates--add_experience.sql
+	QueryAddExperience string
 )

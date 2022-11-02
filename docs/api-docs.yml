@@ -335,6 +335,35 @@ paths:
         '500':
           description: Internal Server Error
 
+  /candidates/experience:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - candidates
+      summary: Create Experience Candidate
+      description: Candidate can added their experience working
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/CreateExperienceCandidateArgument'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCreateExperienceCandidate'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+
   /candidates/{candidateId}:
     put:
       security:
@@ -790,6 +819,67 @@ components:
         data:
           type: object
           $ref: '#/components/schemas/DetailCandidate'
+
+    ExperienceCandidate:
+      type: object
+      properties:
+        id:
+          type: string
+        candidate_id:
+          type: string
+        company_name:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        date_start:
+          type: string
+        date_end:
+          type: string
+        is_active:
+          type: integer
+        created_at:
+          type: string
+        modified_at:
+          type: string
+
+    CreateExperienceCandidateArgument:
+      type: object
+      properties:
+        candidate_id:
+          type: string
+        company_name:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        date_start:
+          type: string
+        date_end:
+          type: string
+      required:
+        - candidate_id
+        - company_name
+        - title
+        - date_start
+
+    ResponseCreateExperienceCandidate:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: object
+          properties:
+            en:
+              type: string
+            id:
+              type: string
+        data:
+          type: object
+          $ref: '#/components/schemas/ExperienceCandidate'
 
   securitySchemes:
     bearerAuth:
