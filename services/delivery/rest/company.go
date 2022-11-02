@@ -3,7 +3,6 @@ package rest
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -218,7 +217,7 @@ func (h handler) PostReviewCompany(w http.ResponseWriter, r *http.Request, ps ht
 		response.ResultError(w, response.ErrorOnlyCandidate, nil)
 		return
 	}
-	fmt.Println("candidate", candidate)
+
 	if candidate.ID != args.CandidateID {
 		log.Println("[company] [delivery] [CreateReviewCompany] while ErrorUnauthorized")
 		response.ResultError(w, response.ErrorUnauthorized, nil)

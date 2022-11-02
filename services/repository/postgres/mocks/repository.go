@@ -290,6 +290,21 @@ func (m *MockCandidateRepository) EXPECT() *MockCandidateRepositoryMockRecorder 
 	return m.recorder
 }
 
+// AddExperience mocks base method.
+func (m *MockCandidateRepository) AddExperience(ctx context.Context, args models.CandidateExperience) (models.CandidateExperience, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddExperience", ctx, args)
+	ret0, _ := ret[0].(models.CandidateExperience)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddExperience indicates an expected call of AddExperience.
+func (mr *MockCandidateRepositoryMockRecorder) AddExperience(ctx, args interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddExperience", reflect.TypeOf((*MockCandidateRepository)(nil).AddExperience), ctx, args)
+}
+
 // CheckCandidateByEmail mocks base method.
 func (m *MockCandidateRepository) CheckCandidateByEmail(ctx context.Context, email string) ([]models.Candidate, error) {
 	m.ctrl.T.Helper()

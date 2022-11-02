@@ -31,4 +31,5 @@ type CandidateRepository interface {
 	CheckCandidateByEmail(ctx context.Context, email string) (result []models.Candidate, err error)
 	CheckCandidateById(ctx context.Context, id string) (result models.Candidate, err error)
 	GetDetailCandidate(ctx context.Context, id string) (result models.Candidate, err error)
+	AddExperience(ctx context.Context, args models.CandidateExperience) (result models.CandidateExperience, err error)
 }

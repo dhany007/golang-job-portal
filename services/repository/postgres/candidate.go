@@ -118,3 +118,26 @@ func (c candidateRepository) GetDetailCandidate(ctx context.Context, id string) 
 
 	return
 }
+
+// AddExperience implements services.CandidateRepository
+func (c candidateRepository) AddExperience(ctx context.Context, args models.CandidateExperience) (result models.CandidateExperience, err error) {
+	_, err = c.DB.ExecContext(
+		ctx,
+		QueryAddExperience,
+		args.CandidateID,
+		args.CompanyName,
+		args.Title,
+		args.Description,
+		args.DateStart,
+		args.DateEnd,
+		args.CreatedAt,
+		args.ModifiedAt,
+	)
+
+	if err != nil {
+		log.Printf("[candidate] [repository] [AddExperience] while QueryAddExperience, err:%+v\n", err)
+		return
+	}
+
+	return args, nil
+}

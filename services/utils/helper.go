@@ -3,6 +3,7 @@ package utils
 import (
 	"os"
 	"strconv"
+	"time"
 )
 
 func ArrayContains(strings []string, key string) bool {
@@ -36,6 +37,15 @@ func Utint(prev string, next int) int {
 
 	if result < 0 {
 		result = 0
+	}
+
+	return result
+}
+
+func ConvertStringToUtc(date string) time.Time {
+	result, err := time.Parse(time.RFC3339, date)
+	if err != nil {
+		return ConvertStringToUtc("0001-01-01 00:00:00 +0000 UTC")
 	}
 
 	return result
