@@ -26,4 +26,5 @@ type CompanyUsecase interface {
 type CandidateUsecase interface {
 	UpdateCandidate(ctx context.Context, args models.CandidateArgument) (result models.Candidate, err error)
 	AddExperience(ctx context.Context, args models.CandidateExperienceArgument) (result models.CandidateExperience, err error)
+	UpdateExperience(ctx context.Context, args models.CandidateExperience) (result models.CandidateExperience, err error)
 }

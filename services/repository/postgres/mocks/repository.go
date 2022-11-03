@@ -350,6 +350,21 @@ func (mr *MockCandidateRepositoryMockRecorder) GetDetailCandidate(ctx, id interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDetailCandidate", reflect.TypeOf((*MockCandidateRepository)(nil).GetDetailCandidate), ctx, id)
 }
 
+// GetExperienceById mocks base method.
+func (m *MockCandidateRepository) GetExperienceById(ctx context.Context, experienceId int) (models.CandidateExperience, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetExperienceById", ctx, experienceId)
+	ret0, _ := ret[0].(models.CandidateExperience)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetExperienceById indicates an expected call of GetExperienceById.
+func (mr *MockCandidateRepositoryMockRecorder) GetExperienceById(ctx, experienceId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExperienceById", reflect.TypeOf((*MockCandidateRepository)(nil).GetExperienceById), ctx, experienceId)
+}
+
 // UpdateCandidate mocks base method.
 func (m *MockCandidateRepository) UpdateCandidate(ctx context.Context, args models.Candidate) error {
 	m.ctrl.T.Helper()
@@ -362,4 +377,18 @@ func (m *MockCandidateRepository) UpdateCandidate(ctx context.Context, args mode
 func (mr *MockCandidateRepositoryMockRecorder) UpdateCandidate(ctx, args interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCandidate", reflect.TypeOf((*MockCandidateRepository)(nil).UpdateCandidate), ctx, args)
+}
+
+// UpdateExperience mocks base method.
+func (m *MockCandidateRepository) UpdateExperience(ctx context.Context, args models.CandidateExperience) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateExperience", ctx, args)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateExperience indicates an expected call of UpdateExperience.
+func (mr *MockCandidateRepositoryMockRecorder) UpdateExperience(ctx, args interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateExperience", reflect.TypeOf((*MockCandidateRepository)(nil).UpdateExperience), ctx, args)
 }

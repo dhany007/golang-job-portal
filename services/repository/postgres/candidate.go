@@ -130,8 +130,6 @@ func (c candidateRepository) AddExperience(ctx context.Context, args models.Cand
 		args.Description,
 		args.DateStart,
 		args.DateEnd,
-		args.CreatedAt,
-		args.ModifiedAt,
 	)
 
 	if err != nil {
@@ -140,4 +138,50 @@ func (c candidateRepository) AddExperience(ctx context.Context, args models.Cand
 	}
 
 	return args, nil
+}
+
+// GetExperienceById implements services.CandidateRepository
+func (c candidateRepository) GetExperienceById(ctx context.Context, experienceId int) (result models.CandidateExperience, err error) {
+	var (
+		rows *sqlx.Rows
+	)
+
+	rows, err = c.DB.QueryxContext(ctx, QueryGetExperienceById, experienceId)
+	if err != nil {
+		log.Printf("[candidate] [repository] [GetExperienceById] while QueryGetExperienceById, err:%+v\n", err)
+		return
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		err = rows.StructScan(&result)
+		if err != nil {
+			log.Printf("[candidate] [repository] [GetExperienceById] while StructScan, err:%+v\n", err)
+			return
+		}
+	}
+
+	return
+}
+
+// UpdateExperience implements services.CandidateRepository
+func (c candidateRepository) UpdateExperience(ctx context.Context, args models.CandidateExperience) (err error) {
+	_, err = c.DB.ExecContext(
+		ctx,
+		QueryUpdateExperience,
+		args.CompanyName,
+		args.Title,
+		args.Description,
+		args.ModifiedAt,
+		args.CandidateID,
+		args.ID,
+	)
+
+	if err != nil {
+		log.Printf("[candidate][repository][UpdateExperience] while QueryUpdateExperience, err:%+v\n", err)
+		return
+	}
+
+	return nil
 }

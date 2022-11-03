@@ -3,8 +3,10 @@ package usecase
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/dhany007/golang-job-portal/models"
+	"github.com/dhany007/golang-job-portal/models/response"
 	"github.com/dhany007/golang-job-portal/services"
 	"github.com/dhany007/golang-job-portal/services/utils"
 )
@@ -25,6 +27,7 @@ func (c candidateUsecase) UpdateCandidate(ctx context.Context, args models.Candi
 	// check candidate by id given
 	candidate, err = c.repo.CheckCandidateById(ctx, args.ID)
 	if err != nil {
+		err = response.NewErrork(response.ErrorNotFound)
 		log.Printf("[candidate] [usecase] [UpdateCandidate] while CheckCompanyById, args: %+v\n", args)
 		return
 	}
@@ -76,4 +79,34 @@ func (c candidateUsecase) AddExperience(ctx context.Context, args models.Candida
 	}
 
 	return
+}
+
+// UpdateExperience implements services.CandidateUsecase
+func (c candidateUsecase) UpdateExperience(ctx context.Context, args models.CandidateExperience) (result models.CandidateExperience, err error) {
+	// check if experienceId exist
+	result, err = c.repo.GetExperienceById(ctx, args.ID)
+	if err != nil {
+		log.Printf("[candidate][usecase][UpdateExperience] while repo.GetExperienceById, body: %+v\n", args)
+		return
+	}
+
+	if result.ID == 0 {
+		err = response.NewErrork(response.ErrorNotFound)
+		log.Println("[candidate][usecase][UpdateExperience] while not found")
+		return
+	}
+
+	// repository update experience
+	err = c.repo.UpdateExperience(ctx, args)
+	if err != nil {
+		log.Printf("[candidate][usecase][UpdateExperience] while repo.UpdateExperience, body: %+v\n", args)
+		return
+	}
+
+	result.CompanyName = args.CompanyName
+	result.Title = args.Title
+	result.Description = args.Description
+	result.ModifiedAt = time.Now()
+
+	return args, nil
 }

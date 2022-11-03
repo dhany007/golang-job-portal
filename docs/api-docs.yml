@@ -335,7 +335,7 @@ paths:
         '500':
           description: Internal Server Error
 
-  /candidates/experience:
+  /candidates/experiences:
     post:
       security:
         - bearerAuth: []
@@ -391,6 +391,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseUpdateCandidate'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+
+  /candidates/{candidateId}/experiences/{experienceId}:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - candidates
+      summary: Update candidate's experience
+      description: candidate only can update their experience
+      parameters:
+        - required: true
+          name: candidateId
+          in: path
+          description: candidateId of candidate
+          schema:
+            type: string
+        - required: true
+          name: experienceId
+          in: path
+          description: experienceId of candidate's experience
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/UpdateExperienceCandidateArgument'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCreateExperienceCandidate'
         '400':
           description: Bad Request
         '401':
@@ -824,7 +866,7 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: integer
         candidate_id:
           type: string
         company_name:
@@ -861,6 +903,24 @@ components:
           type: string
       required:
         - candidate_id
+        - company_name
+        - title
+        - date_start
+
+    UpdateExperienceCandidateArgument:
+      type: object
+      properties:
+        company_name:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        date_start:
+          type: string
+        date_end:
+          type: string
+      required:
         - company_name
         - title
         - date_start
