@@ -90,4 +90,10 @@ var (
 
 	//go:embed schemas/candidates/jobportal.candidates--add_experience.sql
 	QueryAddExperience string
+
+	//go:embed schemas/candidates/jobportal.candidates--update_experience.sql
+	QueryUpdateExperience string
+
+	//go:embed schemas/candidates/jobportal.candidates--get_experience_by_id.sql
+	QueryGetExperienceById string
 )

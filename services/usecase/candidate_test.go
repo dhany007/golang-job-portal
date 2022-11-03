@@ -221,3 +221,108 @@ func TestUsecase_Candidate_AddExperience(t *testing.T) {
 		})
 	}
 }
+
+func TestUsecase_Candidate_UpdateExperience(t *testing.T) {
+	type testCase struct {
+		desc                string
+		wantError           bool
+		input               models.CandidateExperience
+		onGetExperienceById func(mock *mocks.MockCandidateRepository)
+		onUpdateExperience  func(mock *mocks.MockCandidateRepository)
+	}
+
+	var testcases []testCase
+
+	testcases = append(testcases, testCase{
+		desc:      "failed, experience not found",
+		wantError: true,
+		input: models.CandidateExperience{
+			ID:          1,
+			CandidateID: "xxx",
+		},
+		onGetExperienceById: func(mock *mocks.MockCandidateRepository) {
+			mock.EXPECT().GetExperienceById(gomock.Any(), gomock.Any()).Return(
+				models.CandidateExperience{ID: 0},
+				nil,
+			)
+		},
+	})
+
+	testcases = append(testcases, testCase{
+		desc:      "failed, internal server error",
+		wantError: true,
+		input: models.CandidateExperience{
+			ID:          1,
+			CandidateID: "xxx",
+			CompanyName: "new company",
+			Title:       "new title",
+			Description: "new description",
+		},
+		onGetExperienceById: func(mock *mocks.MockCandidateRepository) {
+			mock.EXPECT().GetExperienceById(gomock.Any(), gomock.Any()).Return(
+				models.CandidateExperience{
+					ID:          1,
+					CandidateID: "xxx",
+				},
+				nil,
+			)
+		},
+		onUpdateExperience: func(mock *mocks.MockCandidateRepository) {
+			mock.EXPECT().UpdateExperience(gomock.Any(), gomock.Any()).Return(
+				errors.New("internal server error"),
+			)
+		},
+	})
+
+	testcases = append(testcases, testCase{
+		desc:      "success update company",
+		wantError: false,
+		input: models.CandidateExperience{
+			ID:          1,
+			CandidateID: "xxx",
+			CompanyName: "new company",
+			Title:       "new title",
+			Description: "new description",
+		},
+		onGetExperienceById: func(mock *mocks.MockCandidateRepository) {
+			mock.EXPECT().GetExperienceById(gomock.Any(), gomock.Any()).Return(
+				models.CandidateExperience{
+					ID:          1,
+					CandidateID: "xxx",
+				},
+				nil,
+			)
+		},
+		onUpdateExperience: func(mock *mocks.MockCandidateRepository) {
+			mock.EXPECT().UpdateExperience(gomock.Any(), gomock.Any()).Return(
+				nil,
+			)
+		},
+	})
+
+	for _, tC := range testcases {
+		t.Run(tC.desc, func(t *testing.T) {
+			mockCtrl := gomock.NewController(t)
+			defer mockCtrl.Finish()
+
+			repo := mocks.NewMockCandidateRepository(mockCtrl)
+			usecase := candidateUsecase{repo}
+
+			if tC.onGetExperienceById != nil {
+				tC.onGetExperienceById(repo)
+			}
+			if tC.onUpdateExperience != nil {
+				tC.onUpdateExperience(repo)
+			}
+
+			result, err := usecase.UpdateExperience(context.Background(), tC.input)
+			if tC.wantError {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
+				assert.NotNil(t, result)
+				assert.Equal(t, tC.input.CandidateID, result.CandidateID)
+			}
+		})
+	}
+}

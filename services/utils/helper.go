@@ -50,3 +50,14 @@ func ConvertStringToUtc(date string) time.Time {
 
 	return result
 }
+
+func ConvertStringToInt(number string) int {
+	result := 0
+
+	value, err := strconv.Atoi(number)
+	if err == nil {
+		result = value
+	}
+
+	return result
+}

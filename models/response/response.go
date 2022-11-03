@@ -41,6 +41,7 @@ const (
 	errIdOnlyCandidate          = "Hanya candidate yang dapat melakukan aksi"
 	ErrEnReviewFound            = "Candidate can review company once"
 	ErrIdReviewFound            = "Kandidat hanya boleh membuat 1 review tiap company"
+	successEnCreated            = "Success Created"
 )
 
 // status code
@@ -59,6 +60,7 @@ const (
 	statusInvalidParameterID     = http.StatusBadRequest
 	statusOnlyCandidate          = http.StatusBadRequest
 	statusReviewFound            = http.StatusBadRequest
+	statusCreated                = http.StatusCreated
 )
 
 // constant increasing sequences
@@ -77,6 +79,7 @@ const (
 	ErrorInvalidParameter
 	ErrorOnlyCandidate
 	ErrorReviewFound
+	SuccessCreated
 )
 
 type ReturningValue struct {
@@ -113,6 +116,7 @@ var mapping = map[int]ReturningValue{
 	ErrorInvalidParameter: add(statusInvalidParameterID, errEnInvalidParameter, errIdInvalidParameter),
 	ErrorOnlyCandidate:    add(statusOnlyCandidate, errEnOnlyCandidate, errIdOnlyCandidate),
 	ErrorReviewFound:      add(statusReviewFound, ErrEnReviewFound, ErrIdReviewFound),
+	SuccessCreated:        add(statusCreated, successEnCreated, successEnCreated),
 }
 
 func NewErrork(code int) error {
