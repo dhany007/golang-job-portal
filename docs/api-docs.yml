@@ -1,0 +1,949 @@
+openapi: '3.0.2'
+
+info:
+  title: Job Portal API
+  description: This is documentation for all API.
+  version: '1.0'
+
+servers:
+  - url: http://localhost:11010
+    description: development
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Register new user
+      description: User can register as company or candidate based on role
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterArgument'
+      responses:
+        '200':
+          description: Succes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseRegisterUser'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Login user
+      description: User can login as company or candidate. User get access-token for token access all api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginArgument'
+
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseLoginUser'
+        '400':
+          description: Bad Request
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
+
+  /users/refresh-token:
+    post:
+      tags:
+        - users
+      summary: Refresh token user
+      description: User can refresh access-token if expired and get new one
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseRefreshTokenUser'
+        '400':
+          description: Bad Request
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
+
+  /users/logout:
+    post:
+      tags:
+        - users
+      summary: User Logout
+      description: User logout
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseGeneral'
+        '500':
+          description: Internal Server Error
+
+  /companies/detail/{companyId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - companies
+      summary: Get Detail Company
+      description: Get detail company based on companyID
+      parameters:
+        - required: true
+          name: companyId
+          in: path
+          description: companyId of company
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ResponseDetailCompany'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+
+  /companies/reviews/{companyId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - companies
+      summary: Get Reviews Company
+      description: Get all reviews of company based on companyId
+      parameters:
+        - required: true
+          name: companyId
+          in: path
+          description: companyId of company
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: page when get list review company
+          schema:
+            type: string
+        - name: item_per_page
+          required: false
+          in: query
+          description: item_per_page when get list review company
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ResponseGetReviewCompany'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+
+  /companies/dress-codes:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - companies
+      summary: Company Dresscode
+      description: Company can see list codes for dress
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/ResponseCompanySubCode'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+
+  /companies/benefit-codes:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - companies
+      summary: Company Benefit
+      description: Company can see list codes for benefit
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCompanySubCode'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+
+  /companies/size-codes:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - companies
+      summary: Company Size
+      description: Company can see list codes for size
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCompanySubCode'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+
+  /companies:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - companies
+      summary: Get All Company
+      description: Get all company
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: page when get list company
+          schema:
+            type: string
+        - name: item_per_page
+          required: false
+          in: query
+          description: item_per_page when get list company
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseListCompany'
+        '400':
+          description: Bad Request
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+
+  /companies/reviews:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - companies
+      summary: Create Review of Company
+      description: Candidate can review company. Candidate only can make 1 review for each company
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/ReviewCompanyArgument'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePostReviewCompany'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+
+  /companies/{companyId}:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - companies
+      summary: Update Company
+      description: company only can update their own data
+      parameters:
+        - required: true
+          name: companyId
+          in: path
+          description: companyId of company
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/UpdateCompanyArgument'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUpdateCompany'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+
+  /candidates/experiences:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - candidates
+      summary: Create Experience Candidate
+      description: Candidate can added their experience working
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/CreateExperienceCandidateArgument'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCreateExperienceCandidate'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+
+  /candidates/{candidateId}:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - candidates
+      summary: Update Candidate
+      description: candidate only can update their own data
+      parameters:
+        - required: true
+          name: candidateId
+          in: path
+          description: candidateId of candidate
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/UpdateCandidateArgument'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseUpdateCandidate'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+
+  /candidates/{candidateId}/experiences/{experienceId}:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - candidates
+      summary: Update candidate's experience
+      description: candidate only can update their experience
+      parameters:
+        - required: true
+          name: candidateId
+          in: path
+          description: candidateId of candidate
+          schema:
+            type: string
+        - required: true
+          name: experienceId
+          in: path
+          description: experienceId of candidate's experience
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/UpdateExperienceCandidateArgument'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCreateExperienceCandidate'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+
+components:
+  schemas:
+    ResponseGeneral:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: object
+          properties:
+            en:
+              type: string
+            id:
+              type: string
+
+    UserRegisterArgument:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+          minLength: 8
+          maxLength: 32
+        role:
+          type: integer
+          minimum: 1
+          maximum: 2
+      required:
+        - email
+        - password
+        - role
+
+    ResponseRegisterUser:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: object
+          properties:
+            en:
+              type: string
+            id:
+              type: string
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+            email:
+              type: string
+            is_active:
+              type: integer
+            role:
+              type: integer
+            created_at:
+              type: string
+            modified_at:
+              type: string
+
+    UserLoginArgument:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+          minLength: 8
+          maxLength: 32
+      required:
+        - email
+        - password
+
+    ResponseLoginUser:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: object
+          properties:
+            en:
+              type: string
+            id:
+              type: string
+        data:
+          type: object
+          properties:
+            refresh-token:
+              type: string
+            access-token:
+              type: string
+
+    ResponseRefreshTokenUser:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: object
+          properties:
+            en:
+              type: string
+            id:
+              type: string
+        data:
+          type: object
+          properties:
+            access-token:
+              type: string
+
+    ListCompany:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        rating:
+          type: number
+        count_review:
+          type: integer
+
+    CompanySubCode:
+      type: object
+      properties:
+        id:
+          type: integer
+        value:
+          type: string
+
+    DetailCompany:
+      type: object
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        address:
+          type: string
+        website:
+          type: string
+        phone_number:
+          type: string
+        telp_number:
+          type: string
+        profil_picture_url:
+          type: string
+        dress:
+          type: string
+        size:
+          type: string
+        benefit:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanySubCode'
+        "review":
+          type: object
+          properties:
+            rating:
+              type: number
+            count_review:
+              type: integer
+        created_at:
+          type: string
+        modified_at:
+          type: string
+
+    ResponseCompanySubCode:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: object
+          properties:
+            en:
+              type: string
+            id:
+              type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanySubCode'
+
+    ResponseListCompany:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: object
+          properties:
+            en:
+              type: string
+            id:
+              type: string
+        data:
+          type: object
+          properties:
+            page:
+              type: integer
+            total_page:
+              type: integer
+            item_per_page:
+              type: integer
+            total_data:
+              type: integer
+            companies:
+              type: array
+              items:
+                $ref: '#/components/schemas/ListCompany'
+
+    ResponseDetailCompany:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: object
+          properties:
+            en:
+              type: string
+            id:
+              type: string
+        data:
+          type: object
+          $ref: '#/components/schemas/DetailCompany'
+
+    ReviewCompanyArgument:
+      type: object
+      properties:
+        company_id:
+          type: string
+        candidate_id:
+          type: string
+        rating:
+          type: integer
+        review:
+          type: string
+      required:
+        - company_id
+        - candidate_id
+        - rating
+        - review
+
+    ReviewCompany:
+      type: object
+      properties:
+        id:
+          type: integer
+        company_id:
+          type: string
+        candidate_id:
+          type: string
+        rating:
+          type: integer
+        review:
+          type: string
+
+    ResponsePostReviewCompany:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: object
+          properties:
+            en:
+              type: string
+            id:
+              type: string
+        data:
+          type: object
+          $ref: '#/components/schemas/ReviewCompany'
+
+    CandidateReviewCompany:
+      type: object
+      properties:
+        id:
+          type: integer
+        candidate_id:
+          type: string
+        rating:
+          type: integer
+        review:
+          type: string
+
+    ResponseGetReviewCompany:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: object
+          properties:
+            en:
+              type: string
+            id:
+              type: string
+        data:
+          type: object
+          properties:
+            page:
+              type: integer
+            total_page:
+              type: integer
+            item_per_page:
+              type: integer
+            total_data:
+              type: integer
+            companies:
+              type: array
+              items:
+                $ref: '#/components/schemas/CandidateReviewCompany'
+
+    UpdateCompanyArgument:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        address:
+          type: string
+        website:
+          type: string
+        phone_number:
+          type: string
+        telp_number:
+          type: string
+        profil_picture_url:
+          type: string
+        dress:
+          type: integer
+        size:
+          type: integer
+        benefit:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+
+    ResponseUpdateCompany:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: object
+          properties:
+            en:
+              type: string
+            id:
+              type: string
+        data:
+          type: object
+          $ref: '#/components/schemas/DetailCompany'
+
+    DetailCandidate:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone_number:
+          type: string
+        telp_number:
+          type: string
+        address:
+          type: string
+        profil_picture_url:
+          type: string
+        created_at:
+          type: string
+        modified_at:
+          type: string
+
+    UpdateCandidateArgument:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone_number:
+          type: string
+        telp_number:
+          type: string
+        address:
+          type: string
+        profil_picture_url:
+          type: string
+
+    ResponseUpdateCandidate:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: object
+          properties:
+            en:
+              type: string
+            id:
+              type: string
+        data:
+          type: object
+          $ref: '#/components/schemas/DetailCandidate'
+
+    ExperienceCandidate:
+      type: object
+      properties:
+        id:
+          type: integer
+        candidate_id:
+          type: string
+        company_name:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        date_start:
+          type: string
+        date_end:
+          type: string
+        is_active:
+          type: integer
+        created_at:
+          type: string
+        modified_at:
+          type: string
+
+    CreateExperienceCandidateArgument:
+      type: object
+      properties:
+        candidate_id:
+          type: string
+        company_name:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        date_start:
+          type: string
+        date_end:
+          type: string
+      required:
+        - candidate_id
+        - company_name
+        - title
+        - date_start
+
+    UpdateExperienceCandidateArgument:
+      type: object
+      properties:
+        company_name:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        date_start:
+          type: string
+        date_end:
+          type: string
+      required:
+        - company_name
+        - title
+        - date_start
+
+    ResponseCreateExperienceCandidate:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: object
+          properties:
+            en:
+              type: string
+            id:
+              type: string
+        data:
+          type: object
+          $ref: '#/components/schemas/ExperienceCandidate'
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Authenticatioon for APIs
