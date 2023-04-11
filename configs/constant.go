@@ -8,4 +8,6 @@ const (
 	DB_USER = "postgres"
 	DB_PASS = ""
 	DB_NAME = "job-portal"
+
+	REDIS_CACHE_URL = "localhost:6739"
 )
