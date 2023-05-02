@@ -2,9 +2,16 @@ package services
 
 import (
 	"context"
+	"time"
 
 	"github.com/dhany007/golang-job-portal/models"
 )
+
+type CacheRepository interface {
+	Get(ctx context.Context, key string) (data string)
+	Set(ctx context.Context, key string, value interface{}, duration time.Duration) (err error)
+	GenerateCacheKey(ctx context.Context, prefix models.CachePrefix, name string, parameters ...interface{}) (data string)
+}
 
 type UserRepository interface {
 	GetUserByEmail(ctx context.Context, email string) (result models.User, err error)

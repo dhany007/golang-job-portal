@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"github.com/dhany007/golang-job-portal/models"
 	"github.com/dhany007/golang-job-portal/services/utils"
 	redis "github.com/redis/go-redis/v9"
 )
@@ -12,7 +13,8 @@ func (c *Config) InitRedis() error {
 
 func NewRedis() *redis.Client {
 	return redis.NewClient(&redis.Options{
-		Network: utils.GetEnv("REDIS_CACHE_URL", REDIS_CACHE_URL),
-		Addr:    utils.GetEnv("REDIS_CACHE_URL", ""),
+		Addr:     utils.GetEnv("REDIS_CACHE_URL", models.REDIS_CACHE_URL),
+		Password: utils.GetEnv("REDIS_CACHE_PWD", ""),
+		DB:       0,
 	})
 }
