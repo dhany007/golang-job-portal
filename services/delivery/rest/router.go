@@ -31,14 +31,16 @@ func NewHandler(
 	router.POST("/users/refresh-token", h.RefreshToken)
 	router.POST("/users/logout", h.Logout)
 
-	// below use token for authentication
 	// companies router
-	router.GET("/companies/detail/:companyId", middleware.Authentication(h.GetDetailCompany))
-	router.GET("/companies/reviews/:companyId", middleware.Authentication(h.GetReviewCompany))
-	router.GET("/companies/dress-codes", middleware.Authentication(h.GetListDresscode))
-	router.GET("/companies/benefit-codes", middleware.Authentication(h.GetListBenefitcode))
-	router.GET("/companies/size-codes", middleware.Authentication(h.GetListSizecode))
-	router.GET("/companies", middleware.Authentication(h.GetListCompanies))
+	// public router
+	router.GET("/companies/detail/:companyId", h.GetDetailCompany)
+	router.GET("/companies/reviews/:companyId", h.GetReviewCompany)
+	router.GET("/companies", h.GetListCompanies)
+	router.GET("/companies/dress-codes", h.GetListDresscode)
+	router.GET("/companies/benefit-codes", h.GetListBenefitcode)
+	router.GET("/companies/size-codes", h.GetListSizecode)
+
+	// below use token for authentication
 	router.POST("/companies/reviews", middleware.Authentication(h.PostReviewCompany))
 	router.PUT("/companies/:companyId", middleware.Authentication(h.UpdateCompany))
 

@@ -2,29 +2,54 @@ package postgres
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/dhany007/golang-job-portal/models"
 	"github.com/dhany007/golang-job-portal/models/response"
 	"github.com/dhany007/golang-job-portal/services"
 	"github.com/dhany007/golang-job-portal/services/repository/database"
+	"github.com/dhany007/golang-job-portal/services/utils"
 	"github.com/jmoiron/sqlx"
 )
 
 type companyRepository struct {
-	DB *database.DB
+	DB        *database.DB
+	CacheRepo services.CacheRepository
 }
 
-func NewCompanyRepository(db *database.DB) services.CompanyRepository {
-	return &companyRepository{db}
+func NewCompanyRepository(db *database.DB, cacheRepo services.CacheRepository) services.CompanyRepository {
+	return &companyRepository{
+		DB:        db,
+		CacheRepo: cacheRepo,
+	}
 }
 
 func (c companyRepository) GetListDresscode(ctx context.Context) (result []models.CompanySubCode, err error) {
 	var (
 		row   *sqlx.Rows
 		dress models.CompanySubCode
+
+		isCacheEnable = utils.GetEnv(models.EnvKeySettingFeatureCacheGetListDresscodeCompanyEnabled, "FALSE") == "TRUE"
+		cacheKey      = c.CacheRepo.GenerateCacheKey(ctx, models.PrefixCompanyListDresscode, "repository.GetListDresscode", "")
 	)
+
+	if isCacheEnable {
+		cacheData := c.CacheRepo.Get(ctx, cacheKey)
+		if cacheData != "" {
+			errx := json.Unmarshal([]byte(cacheData), &result)
+			// if error, then should be get from database, not return
+			if errx != nil {
+				log.Printf("failed to unmarshal data from cache (key: %s)\n", cacheKey)
+			}
+
+			if errx == nil {
+				return
+			}
+		}
+	}
 
 	row, err = c.DB.QueryxContext(ctx, QueryListCompanyDresscodes)
 	if err != nil {
@@ -42,6 +67,21 @@ func (c companyRepository) GetListDresscode(ctx context.Context) (result []model
 		}
 
 		result = append(result, dress)
+	}
+
+	if isCacheEnable && len(result) > 0 {
+		dataBytes, errx := json.Marshal(result)
+		if errx != nil {
+			log.Printf("failed to marshal data result (key:%s)", cacheKey)
+		}
+
+		if errx == nil {
+			cacheDuration := utils.StringToInt(utils.GetEnv(models.EnvKeySettingFeatureCacheGetListDresscodeCompanyDurationMinutes, "10"), 10)
+			errx = c.CacheRepo.Set(ctx, cacheKey, string(dataBytes), time.Minute*time.Duration(cacheDuration))
+			if errx != nil {
+				log.Printf("failed to set data result (key:%s)", cacheKey)
+			}
+		}
 	}
 
 	return
