@@ -11,6 +11,8 @@ type CacheRepository interface {
 	Get(ctx context.Context, key string) (data string)
 	Set(ctx context.Context, key string, value interface{}, duration time.Duration) (err error)
 	GenerateCacheKey(ctx context.Context, prefix models.CachePrefix, name string, parameters ...interface{}) (data string)
+	DeleteByPrefix(ctx context.Context, prefix models.CachePrefix) (err error)
+	DeleteByPrefixAsync(ctx context.Context, prefix models.CachePrefix)
 }
 
 type UserRepository interface {

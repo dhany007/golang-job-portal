@@ -15,10 +15,13 @@ const (
 type CachePrefix string
 
 const (
-	EnvKeySettingFeatureCacheGetListDresscodeCompanyEnabled         string = "SETTING_FEATURE_CACHE_GET_LIST_DRESSCODE_COMPANY_ENABLE"
-	EnvKeySettingFeatureCacheGetListDresscodeCompanyDurationMinutes string = "SETTING_FEATURE_CACHE_GET_LIST_DRESSCODE_COMPANY_DURATION_MINUTES"
+	EnvKeySettingFeatureCacheGetListDresscodeCompanyEnabled           string = "SETTING_FEATURE_CACHE_GET_LIST_DRESSCODE_COMPANY_ENABLE"
+	EnvKeySettingFeatureCacheGetListDresscodeCompanyDurationMinutes   string = "SETTING_FEATURE_CACHE_GET_LIST_DRESSCODE_COMPANY_DURATION_MINUTES"
+	EnvKeySettingFeatureCacheGetListBenefitCodeCompanyEnabled         string = "SETTING_FEATURE_CACHE_GET_LIST_BENEFIT_CODE_COMPANY_ENABLE"
+	EnvKeySettingFeatureCacheGetListBenefitCodeCompanyDurationMinutes string = "SETTING_FEATURE_CACHE_GET_LIST_BENEFIT_CODE_COMPANY_DURATION_MINUTES"
 )
 
 const (
-	PrefixCompanyListDresscode CachePrefix = "company:companyDresscode:"
+	PrefixCompanyListDresscode   CachePrefix = "company:companyDresscode:"
+	PrefixCompanyListBenefitCode CachePrefix = "company:companyBenefitCode:"
 )

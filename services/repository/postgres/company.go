@@ -91,7 +91,25 @@ func (c companyRepository) GetListBenefitcode(ctx context.Context) (result []mod
 	var (
 		row     *sqlx.Rows
 		benefit models.CompanySubCode
+
+		isCacheEnable = utils.GetEnv(models.EnvKeySettingFeatureCacheGetListBenefitCodeCompanyEnabled, "FALSE") == "TRUE"
+		cacheKey      = c.CacheRepo.GenerateCacheKey(ctx, models.PrefixCompanyListBenefitCode, "repository.GetListBenefitcode", "")
 	)
+
+	if isCacheEnable {
+		cacheData := c.CacheRepo.Get(ctx, cacheKey)
+		if cacheData != "" {
+			errx := json.Unmarshal([]byte(cacheData), &result)
+			// if error, then should be get from database, not return
+			if errx != nil {
+				log.Printf("failed to unmarshal data from cache (key: %s)\n", cacheKey)
+			}
+
+			if errx == nil {
+				return
+			}
+		}
+	}
 
 	row, err = c.DB.QueryxContext(ctx, QueryListCompanyBenefitcodes)
 	if err != nil {
@@ -109,6 +127,21 @@ func (c companyRepository) GetListBenefitcode(ctx context.Context) (result []mod
 		}
 
 		result = append(result, benefit)
+	}
+
+	if isCacheEnable && len(result) > 0 {
+		dataBytes, errx := json.Marshal(result)
+		if errx != nil {
+			log.Printf("failed to marshal data result (key:%s)", cacheKey)
+		}
+
+		if errx == nil {
+			cacheDuration := utils.StringToInt(utils.GetEnv(models.EnvKeySettingFeatureCacheGetListBenefitCodeCompanyDurationMinutes, "10"), 10)
+			errx = c.CacheRepo.Set(ctx, cacheKey, string(dataBytes), time.Minute*time.Duration(cacheDuration))
+			if errx != nil {
+				log.Printf("failed to set data result (key:%s)", cacheKey)
+			}
+		}
 	}
 
 	return
