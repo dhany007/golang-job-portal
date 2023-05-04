@@ -58,3 +58,45 @@ func (c cacheRepository) Set(ctx context.Context, key string, value interface{},
 
 	return c.redisClient.Set(ctx, key, value, duration).Err()
 }
+
+func (c cacheRepository) DeleteByPrefix(ctx context.Context, prefix models.CachePrefix) (err error) {
+	var (
+		allKeys []string
+		cursor  uint64
+	)
+	for {
+		var (
+			keys []string
+		)
+
+		keys, cursor, err = c.redisClient.Scan(ctx, cursor, fmt.Sprintf("%s *", prefix), 0).Result()
+
+		if err != nil {
+			err = fmt.Errorf("failed to get the redis keys (%s)", prefix)
+			return
+		}
+
+		allKeys = append(allKeys, keys...)
+
+		if cursor == 0 {
+			break
+		}
+	}
+
+	err = c.redisClient.Del(ctx, allKeys...).Err()
+	if err != nil {
+		err = fmt.Errorf("failed to delete keys redis (prefix: %s)", prefix)
+		return
+	}
+
+	return
+}
+
+func (c cacheRepository) DeleteByPrefixAsync(ctx context.Context, prefix models.CachePrefix) {
+	go func() {
+		err := c.DeleteByPrefix(ctx, prefix)
+		if err != nil {
+			log.Printf("failed to delete keys redis (prefix: %s)\n", prefix)
+		}
+	}()
+}
